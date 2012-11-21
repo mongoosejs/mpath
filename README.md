@@ -1,6 +1,6 @@
 #mpath
 
-{G,S}et javascript object values using MongoDB path notation.
+{G,S}et javascript object values using MongoDB-like path notation.
 
 ###Getting
 
@@ -17,6 +17,66 @@ var obj = {
 mpath.get('comments.1.title', obj) // 'exciting!'
 ```
 
+`mpath.get` supports array property notation as well.
+
+```js
+var obj = {
+    comments: [
+      { title: 'funny' },
+      { title: 'exciting!' }
+    ]
+}
+
+mpath.get('comments.title', obj) // ['funny', 'exciting!']
+```
+
+Array property and indexing syntax, when used together, are very powerful.
+
+```js
+var obj = {
+  array: [
+      { o: { array: [{x: {b: [4,6,8]}}, { y: 10} ] }}
+    , { o: { array: [{x: {b: [1,2,3]}}, { x: {z: 10 }}, { x: 'Turkey Day' }] }}
+    , { o: { array: [{x: {b: null }}, { x: { b: [null, 1]}}] }}
+    , { o: { array: [{x: null }] }}
+    , { o: { array: [{y: 3 }] }}
+    , { o: { array: [3, 0, null] }}
+    , { o: { name: 'ha' }}
+  ];
+}
+
+var found = mpath.get('array.o.array.x.b.1', obj);
+
+console.log(found); // prints..
+
+    [ [6, undefined]
+    , [2, undefined, undefined]
+    , [null, 1]
+    , [null]
+    , [undefined]
+    , [undefined, undefined, undefined]
+    , undefined
+    ]
+
+```
+
+#####Field selection rules:
+
+The following rules are iteratively applied to each `segment` in the passed `path`. For example:
+
+```js
+var path = 'one.two.14'; // path
+'one' // segment 0
+'two' // segment 1
+14    // segment 2
+```
+
+- 1) when value of the segment parent is not an array, return the value of `parent.segment`
+- 2) when value of the segment parent is an array
+  - a) if the segment is an integer, replace the parent array with the value at `parent[segment]`
+  - b) if not an integer, keep the array but replace each array `item` with the value returned from calling `get(remainingSegments, item)` or undefined if falsey.
+
+
 ###Setting
 
 ```js
@@ -30,6 +90,8 @@ var obj = {
 mpath.set('comments.1.title', 'hilarious', obj)
 console.log(obj.comments[1].title) // hilarious
 ```
+
+_`mpath.set` does not yet support array property notation._
 
 ### Custom object types
 
