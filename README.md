@@ -88,10 +88,122 @@ var obj = {
 }
 
 mpath.set('comments.1.title', 'hilarious', obj)
-console.log(obj.comments[1].title) // hilarious
+console.log(obj.comments[1].title) // 'hilarious'
 ```
 
-_`mpath.set` does not yet support array property notation._
+`mpath.set` supports the same array property notation as `mpath.get`.
+
+```js
+var obj = {
+    comments: [
+      { title: 'funny' },
+      { title: 'exciting!' }
+    ]
+}
+
+mpath.set('comments.title', ['hilarious', 'fruity'], obj);
+
+console.log(obj); // prints..
+
+  { comments: [
+      { title: 'hilarious' },
+      { title: 'fruity' }
+  ]}
+```
+
+Array property and indexing syntax can be used together also when setting.
+
+```js
+var obj = {
+  array: [
+      { o: { array: [{x: {b: [4,6,8]}}, { y: 10} ] }}
+    , { o: { array: [{x: {b: [1,2,3]}}, { x: {z: 10 }}, { x: 'Turkey Day' }] }}
+    , { o: { array: [{x: {b: null }}, { x: { b: [null, 1]}}] }}
+    , { o: { array: [{x: null }] }}
+    , { o: { array: [{y: 3 }] }}
+    , { o: { array: [3, 0, null] }}
+    , { o: { name: 'ha' }}
+  ]
+}
+
+mpath.set('array.1.o', 'this was changed', obj);
+
+console.log(require('util').inspect(obj, false, 1000)); // prints..
+
+{
+  array: [
+      { o: { array: [{x: {b: [4,6,8]}}, { y: 10} ] }}
+    , { o: 'this was changed' }
+    , { o: { array: [{x: {b: null }}, { x: { b: [null, 1]}}] }}
+    , { o: { array: [{x: null }] }}
+    , { o: { array: [{y: 3 }] }}
+    , { o: { array: [3, 0, null] }}
+    , { o: { name: 'ha' }}
+  ];
+}
+
+mpath.set('array.o.array.x', 'this was changed too', obj);
+
+console.log(require('util').inspect(obj, false, 1000)); // prints..
+
+{
+  array: [
+      { o: { array: [{x: 'this was changed too'}, { y: 10, x: 'this was changed too'} ] }}
+    , { o: 'this was changed' }
+    , { o: { array: [{x: 'this was changed too'}, { x: 'this was changed too'}] }}
+    , { o: { array: [{x: 'this was changed too'}] }}
+    , { o: { array: [{x: 'this was changed too', y: 3 }] }}
+    , { o: { array: [3, 0, null] }}
+    , { o: { name: 'ha' }}
+  ];
+}
+```
+
+####Setting arrays
+
+By default, setting a property within an array to another array results in each element of the new array being set to the item in the destination array at the matching index. An example is helpful.
+
+```js
+var obj = {
+    comments: [
+      { title: 'funny' },
+      { title: 'exciting!' }
+    ]
+}
+
+mpath.set('comments.title', ['hilarious', 'fruity'], obj);
+
+console.log(obj); // prints..
+
+  { comments: [
+      { title: 'hilarious' },
+      { title: 'fruity' }
+  ]}
+```
+
+If we do not desire this destructuring-like assignment behavior we may instead specify the `$` operator in the path being set to force the array to be copied directly.
+
+```js
+var obj = {
+    comments: [
+      { title: 'funny' },
+      { title: 'exciting!' }
+    ]
+}
+
+mpath.set('comments.$.title', ['hilarious', 'fruity'], obj);
+
+console.log(obj); // prints..
+
+  { comments: [
+      { title: ['hilarious', 'fruity'] },
+      { title: ['hilarious', 'fruity'] }
+  ]}
+```
+
+####Field assignment rules
+
+The rules utilized mirror those used on `mpath.get`, meaning we can take values returned from `mpath.get`, update them, and reassign them using `mpath.set`. Note that setting nested arrays of arrays can get unweildy quickly. Check out the [tests](https://github.com/aheckmann/mpath/blob/master/test/index.js) for more extreme examples.
 
 ### Custom object types
 
