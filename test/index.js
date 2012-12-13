@@ -1167,6 +1167,31 @@ describe('mpath', function(){
         assert.deepEqual(t, o.array);
         done();
       })
+
+      it('array.prop', function(done){
+        mpath.set('comments.name', ['this', 'was', 'changed'], o);
+
+        assert.deepEqual([
+            { name: 'this' }
+          , { name: 'was', _doc: { name: '2' }}
+          , { name: 'changed'
+              , comments: [{},{ comments: [{val: 'twoo'}]}]
+              , _doc: { name: '3', comments: [{},{ _doc: { comments: [{ val: 2 }] }}]  }}
+        ], o.comments);
+
+        mpath.set('comments.name', ['also', 'changed', 'this'], o, special);
+
+        assert.deepEqual([
+            { name: 'also' }
+          , { name: 'was', _doc: { name: 'changed' }}
+          , { name: 'changed'
+              , comments: [{},{ comments: [{val: 'twoo'}]}]
+              , _doc: { name: 'this', comments: [{},{ _doc: { comments: [{ val: 2 }] }}]  }}
+        ], o.comments);
+
+        done();
+      })
+
     })
 
     describe('multiple $ use', function(){
