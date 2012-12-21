@@ -76,6 +76,25 @@ var path = 'one.two.14'; // path
   - a) if the segment is an integer, replace the parent array with the value at `parent[segment]`
   - b) if not an integer, keep the array but replace each array `item` with the value returned from calling `get(remainingSegments, item)` or undefined if falsey.
 
+#####Maps
+
+`mpath.get` also accepts an optional `map` argument which receives each individual found value. The value returned from the `map` function will be used in the original found values place.
+
+```js
+var obj = {
+    comments: [
+      { title: 'funny' },
+      { title: 'exciting!' }
+    ]
+}
+
+mpath.get('comments.title', obj, function (val) {
+  return 'funny' == val
+    ? 'amusing'
+    : val;
+});
+// ['amusing', 'exciting!']
+```
 
 ###Setting
 
@@ -205,6 +224,30 @@ console.log(obj); // prints..
 
 The rules utilized mirror those used on `mpath.get`, meaning we can take values returned from `mpath.get`, update them, and reassign them using `mpath.set`. Note that setting nested arrays of arrays can get unweildy quickly. Check out the [tests](https://github.com/aheckmann/mpath/blob/master/test/index.js) for more extreme examples.
 
+#####Maps
+
+`mpath.set` also accepts an optional `map` argument which receives each individual value being set. The value returned from the `map` function will be used in the original values place.
+
+```js
+var obj = {
+    comments: [
+      { title: 'funny' },
+      { title: 'exciting!' }
+    ]
+}
+
+mpath.set('comments.title', ['hilarious', 'fruity'], obj, function (val) {
+  return val.length;
+});
+
+console.log(obj); // prints..
+
+  { comments: [
+      { title: 9 },
+      { title: 6 }
+  ]}
+```
+
 ### Custom object types
 
 Sometimes you may want to enact the same functionality on custom object types that store all their real data internally, say for an ODM type object. No fear, `mpath` has you covered. Simply pass the name of the property being used to store the internal data and it will be traversed instead:
@@ -222,6 +265,13 @@ mpath.get('comments.0.title', obj, '_doc')            // 'great!'
 mpath.set('comments.0.title', 'nov 3rd', obj, '_doc')
 mpath.get('comments.0.title', obj, '_doc')            // 'nov 3rd'
 mpath.get('comments.0.title', obj)                    // 'exciting'
+```
+
+When used with a `map`, the `map` argument comes last.
+
+```js
+mpath.get(path, obj, '_doc', map);
+mpath.set(path, val, obj, '_doc', map);
 ```
 
 [LICENSE](https://github.com/aheckmann/mpath/blob/master/LICENSE)

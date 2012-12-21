@@ -172,6 +172,12 @@ describe('mpath', function(){
           [undefined, 'aaron', undefined]
           , mpath.get('first.second.third.name', o)
         );
+        assert.deepEqual(
+          [1, 'aaron', 1]
+          , mpath.get('first.second.third.name', o, function (v) {
+            return undefined === v ? 1 : v;
+          })
+        );
         done();
       })
 
@@ -273,6 +279,19 @@ describe('mpath', function(){
             ]
           , mpath.get('array.o.array.x.b.1', o)
         );
+        assert.deepEqual(
+            [ [6, 0]
+            , [2, 0, 'i'] // undocumented feature (string indexing)
+            , [null, 1]
+            , [null]
+            , [0]
+            , [0, 0, 0]
+            , 0
+            ]
+          , mpath.get('array.o.array.x.b.1', o, function (v) {
+            return undefined === v ? 0 : v;
+          })
+        );
         done();
       })
 
@@ -280,6 +299,17 @@ describe('mpath', function(){
         assert.deepEqual(
             [{x: {b: [1,2,3]}}, { x: {z: 10 }}, { x: {b: 'hi'}}]
           , mpath.get('array.1.o.array', o)
+        );
+        assert.deepEqual(
+            ['hi','hi','hi']
+          , mpath.get('array.1.o.array', o, function (v) {
+            if (Array.isArray(v)) {
+              return v.map(function (val) {
+                return 'hi';
+              })
+            }
+            return v;
+          })
         );
         done();
       })
@@ -289,10 +319,24 @@ describe('mpath', function(){
             [{ a: { c: 48 }}, undefined]
           , mpath.get('arr.arr.1', o)
         );
+        assert.deepEqual(
+            ['woot', undefined]
+          , mpath.get('arr.arr.1', o, function (v) {
+            if (v && v.a && v.a.c) return 'woot';
+            return v;
+          })
+        );
         done();
       })
 
       it('handles array.array.index.prop', function(done){
+        assert.deepEqual(
+            [{ c: 48 }, 'woot']
+          , mpath.get('arr.arr.1.a', o, function (v) {
+            if (undefined === v) return 'woot';
+            return v;
+          })
+        );
         assert.deepEqual(
             [{ c: 48 }, undefined]
           , mpath.get('arr.arr.1.a', o)
@@ -310,6 +354,13 @@ describe('mpath', function(){
         assert.deepEqual(
             [48, undefined]
           , mpath.get('arr.arr.1.a.c', o)
+        );
+        assert.deepEqual(
+            [48, 'woot']
+          , mpath.get('arr.arr.1.a.c', o, function (v) {
+            if (undefined === v) return 'woot';
+            return v;
+          })
         );
         done();
       })
@@ -341,6 +392,13 @@ describe('mpath', function(){
         );
 
         assert.deepEqual(
+          4
+          , mpath.get('first.second.third.0', o, special, function (v) {
+            return 3 === v ? 4 : v;
+          })
+        );
+
+        assert.deepEqual(
           9
           , mpath.get('first.second.third.2', o, special)
         );
@@ -367,6 +425,9 @@ describe('mpath', function(){
         assert.deepEqual('one', mpath.get('comments.0.name', o, special));
         assert.deepEqual('2', mpath.get('comments.1.name', o, special));
         assert.deepEqual('3', mpath.get('comments.2.name', o, special));
+        assert.deepEqual('nice', mpath.get('comments.2.name', o, special, function (v) {
+          return '3' === v ? 'nice' : v;
+        }));
 
         assert.deepEqual([{},{ _doc: { comments: [{ val: 2 }] }}]
             , mpath.get('comments.2.comments', o, special));
@@ -382,6 +443,12 @@ describe('mpath', function(){
         assert.deepEqual(
           ['one', '2', '3']
           , mpath.get('comments.name', o, special)
+        );
+        assert.deepEqual(
+          ['one', 2, '3']
+          , mpath.get('comments.name', o, special, function (v) {
+            return '2' === v ? 2 : v
+          })
         );
         done();
       })
@@ -407,6 +474,12 @@ describe('mpath', function(){
             [undefined, undefined, [2]]
           , mpath.get('comments.comments.1.comments.val', o, special)
         );
+        assert.deepEqual(
+            ['nil', 'nil', [2]]
+          , mpath.get('comments.comments.1.comments.val', o, special, function (v) {
+            return undefined === v ? 'nil' : v;
+          })
+        );
         done();
       })
     })
@@ -418,6 +491,11 @@ describe('mpath', function(){
       var o = doc();
 
       it('works', function(done){
+        mpath.set('name', 'a new val', o, function (v) {
+          return 'a new val' === v ? 'changed' : v;
+        });
+        assert.deepEqual('changed', o.name);
+
         mpath.set('name', 'changed', o);
         assert.deepEqual('changed', o.name);
 
@@ -453,6 +531,14 @@ describe('mpath', function(){
       describe('array.path', function(){
         describe('with single non-array value', function(){
           it('works', function(done){
+            mpath.set('arr.yep', false, o, function (v) {
+              return false === v ? true: v;
+            });
+            assert.deepEqual([
+              { yep: true, arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }] }
+            , { yep: true }
+            ], o.arr);
+
             mpath.set('arr.yep', false, o);
 
             assert.deepEqual([
@@ -465,6 +551,13 @@ describe('mpath', function(){
         })
         describe('with array of values', function(){
           it('that are equal in length', function(done){
+            mpath.set('arr.yep', ['one',2], o, function (v) {
+              return 'one' === v ? 1 : v;
+            });
+            assert.deepEqual([
+              { yep: 1, arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }] }
+            , { yep: 2 }
+            ], o.arr);
             mpath.set('arr.yep', ['one',2], o);
 
             assert.deepEqual([
@@ -476,8 +569,15 @@ describe('mpath', function(){
           })
 
           it('that is less than length', function(done){
-            mpath.set('arr.yep', [47], o);
+            mpath.set('arr.yep', [47], o, function (v) {
+              return 47 === v ? 4 : v;
+            });
+            assert.deepEqual([
+              { yep: 4, arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }] }
+            , { yep: 2 }
+            ], o.arr);
 
+            mpath.set('arr.yep', [47], o);
             assert.deepEqual([
               { yep: 47, arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }] }
             , { yep: 2 }
@@ -487,8 +587,15 @@ describe('mpath', function(){
           })
 
           it('that is greater than length', function(done){
-            mpath.set('arr.yep', [5,6,7], o);
+            mpath.set('arr.yep', [5,6,7], o, function (v) {
+              return 5 === v ? 'five' : v;
+            });
+            assert.deepEqual([
+              { yep: 'five', arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }] }
+            , { yep: 6 }
+            ], o.arr);
 
+            mpath.set('arr.yep', [5,6,7], o);
             assert.deepEqual([
               { yep: 5, arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }] }
             , { yep: 6 }
@@ -502,8 +609,15 @@ describe('mpath', function(){
       describe('array.$.path', function(){
         describe('with single non-array value', function(){
           it('copies the value to each item in array', function(done){
-            mpath.set('arr.$.yep', {xtra: 'double good'}, o);
+            mpath.set('arr.$.yep', {xtra: 'double good'}, o, function (v) {
+              return v && v.xtra ? 'hi' : v;
+            });
+            assert.deepEqual([
+              { yep: 'hi', arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }] }
+            , { yep: 'hi'}
+            ], o.arr);
 
+            mpath.set('arr.$.yep', {xtra: 'double good'}, o);
             assert.deepEqual([
               { yep: {xtra:'double good'}, arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }] }
             , { yep: {xtra:'double good'}}
@@ -514,8 +628,15 @@ describe('mpath', function(){
         })
         describe('with array of values', function(){
           it('copies the value to each item in array', function(done){
-            mpath.set('arr.$.yep', [15], o);
+            mpath.set('arr.$.yep', [15], o, function (v) {
+              return v.length === 1 ? [] : v;
+            });
+            assert.deepEqual([
+              { yep: [], arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }] }
+            , { yep: []}
+            ], o.arr);
 
+            mpath.set('arr.$.yep', [15], o);
             assert.deepEqual([
               { yep: [15], arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }] }
             , { yep: [15]}
@@ -528,8 +649,15 @@ describe('mpath', function(){
 
       describe('array.index.path', function(){
         it('works', function(done){
-          mpath.set('arr.1.yep', 0, o);
+          mpath.set('arr.1.yep', 0, o, function (v) {
+            return 0 === v ? 'zero' : v;
+          });
+          assert.deepEqual([
+            { yep: [15] , arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }] }
+          , { yep: 'zero' }
+          ], o.arr);
 
+          mpath.set('arr.1.yep', 0, o);
           assert.deepEqual([
             { yep: [15] , arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }] }
           , { yep: 0 }
@@ -541,8 +669,15 @@ describe('mpath', function(){
 
       describe('array.index.array.path', function(){
         it('with single value', function(done){
-          mpath.set('arr.0.arr.e', 35, o);
+          mpath.set('arr.0.arr.e', 35, o, function (v) {
+            return 35 === v ? 3 : v;
+          });
+          assert.deepEqual([
+            { yep: [15], arr: [{ a: { b: 47 }, e: 3}, { a: { c: 48 }, e: 3}, { d: 'yep', e: 3 }] }
+          , { yep: 0 }
+          ], o.arr);
 
+          mpath.set('arr.0.arr.e', 35, o);
           assert.deepEqual([
             { yep: [15], arr: [{ a: { b: 47 }, e: 35}, { a: { c: 48 }, e: 35}, { d: 'yep', e: 35 }] }
           , { yep: 0 }
@@ -551,8 +686,15 @@ describe('mpath', function(){
           done();
         })
         it('with array', function(done){
-          mpath.set('arr.0.arr.e', ['a','b'], o);
+          mpath.set('arr.0.arr.e', ['a','b'], o, function (v) {
+            return 'a' === v ? 'x' : v;
+          });
+          assert.deepEqual([
+            { yep: [15], arr: [{ a: { b: 47 }, e: 'x'}, { a: { c: 48 }, e: 'b'}, { d: 'yep', e: 35 }] }
+          , { yep: 0 }
+          ], o.arr);
 
+          mpath.set('arr.0.arr.e', ['a','b'], o);
           assert.deepEqual([
             { yep: [15], arr: [{ a: { b: 47 }, e: 'a'}, { a: { c: 48 }, e: 'b'}, { d: 'yep', e: 35 }] }
           , { yep: 0 }
@@ -564,8 +706,15 @@ describe('mpath', function(){
 
       describe('array.index.array.path.path', function(){
         it('with single value', function(done){
-          mpath.set('arr.0.arr.a.b', 36, o);
+          mpath.set('arr.0.arr.a.b', 36, o, function (v) {
+            return 36 === v ? 3 : v;
+          });
+          assert.deepEqual([
+            { yep: [15], arr: [{ a: { b: 3 }, e: 'a'}, { a: { c: 48, b: 3 }, e: 'b'}, { d: 'yep', e: 35 }] }
+          , { yep: 0 }
+          ], o.arr);
 
+          mpath.set('arr.0.arr.a.b', 36, o);
           assert.deepEqual([
             { yep: [15], arr: [{ a: { b: 36 }, e: 'a'}, { a: { c: 48, b: 36 }, e: 'b'}, { d: 'yep', e: 35 }] }
           , { yep: 0 }
@@ -574,8 +723,15 @@ describe('mpath', function(){
           done();
         })
         it('with array', function(done){
-          mpath.set('arr.0.arr.a.b', [1,2,3,4], o);
+          mpath.set('arr.0.arr.a.b', [1,2,3,4], o, function (v) {
+            return 2 === v ? 'two' : v;
+          });
+          assert.deepEqual([
+            { yep: [15], arr: [{ a: { b: 1 }, e: 'a'}, { a: { c: 48, b: 'two' }, e: 'b'}, { d: 'yep', e: 35 }] }
+          , { yep: 0 }
+          ], o.arr);
 
+          mpath.set('arr.0.arr.a.b', [1,2,3,4], o);
           assert.deepEqual([
             { yep: [15], arr: [{ a: { b: 1 }, e: 'a'}, { a: { c: 48, b: 2 }, e: 'b'}, { d: 'yep', e: 35 }] }
           , { yep: 0 }
@@ -587,8 +743,15 @@ describe('mpath', function(){
 
       describe('array.index.array.$.path.path', function(){
         it('with single value', function(done){
-          mpath.set('arr.0.arr.$.a.b', '$', o);
+          mpath.set('arr.0.arr.$.a.b', '$', o, function (v) {
+            return '$' === v ? 'dolla billz' : v;
+          });
+          assert.deepEqual([
+            { yep: [15], arr: [{ a: { b: 'dolla billz' }, e: 'a'}, { a: { c: 48, b: 'dolla billz' }, e: 'b'}, { d: 'yep', e: 35 }] }
+          , { yep: 0 }
+          ], o.arr);
 
+          mpath.set('arr.0.arr.$.a.b', '$', o);
           assert.deepEqual([
             { yep: [15], arr: [{ a: { b: '$' }, e: 'a'}, { a: { c: 48, b: '$' }, e: 'b'}, { d: 'yep', e: 35 }] }
           , { yep: 0 }
@@ -597,8 +760,15 @@ describe('mpath', function(){
           done();
         })
         it('with array', function(done){
-          mpath.set('arr.0.arr.$.a.b', [1], o);
+          mpath.set('arr.0.arr.$.a.b', [1], o, function (v) {
+            return Array.isArray(v) ? {} : v;
+          });
+          assert.deepEqual([
+            { yep: [15], arr: [{ a: { b: {} }, e: 'a'}, { a: { c: 48, b: {} }, e: 'b'}, { d: 'yep', e: 35 }] }
+          , { yep: 0 }
+          ], o.arr);
 
+          mpath.set('arr.0.arr.$.a.b', [1], o);
           assert.deepEqual([
             { yep: [15], arr: [{ a: { b: [1] }, e: 'a'}, { a: { c: 48, b: [1] }, e: 'b'}, { d: 'yep', e: 35 }] }
           , { yep: 0 }
@@ -610,8 +780,15 @@ describe('mpath', function(){
 
       describe('array.array.index.path', function(){
         it('with single value', function(done){
-          mpath.set('arr.arr.0.a', 'single', o);
+          mpath.set('arr.arr.0.a', 'single', o, function (v) {
+            return 'single' === v ? 'double' : v;
+          });
+          assert.deepEqual([
+            { yep: [15], arr: [{ a: 'double', e: 'a'}, { a: { c: 48, b: [1] }, e: 'b'}, { d: 'yep', e: 35 }] }
+          , { yep: 0 }
+          ], o.arr);
 
+          mpath.set('arr.arr.0.a', 'single', o);
           assert.deepEqual([
             { yep: [15], arr: [{ a: 'single', e: 'a'}, { a: { c: 48, b: [1] }, e: 'b'}, { d: 'yep', e: 35 }] }
           , { yep: 0 }
@@ -620,8 +797,15 @@ describe('mpath', function(){
           done();
         })
         it('with array', function(done){
-          mpath.set('arr.arr.0.a', [4,8,15,16,23,42], o);
+          mpath.set('arr.arr.0.a', [4,8,15,16,23,42], o, function (v) {
+            return 4 === v ? 3 : v;
+          });
+          assert.deepEqual([
+            { yep: [15], arr: [{ a: 3, e: 'a'}, { a: { c: 48, b: [1] }, e: 'b'}, { d: 'yep', e: 35 }] }
+          , { yep: false }
+          ], o.arr);
 
+          mpath.set('arr.arr.0.a', [4,8,15,16,23,42], o);
           assert.deepEqual([
             { yep: [15], arr: [{ a: 4, e: 'a'}, { a: { c: 48, b: [1] }, e: 'b'}, { d: 'yep', e: 35 }] }
           , { yep: false }
@@ -633,6 +817,14 @@ describe('mpath', function(){
 
       describe('array.array.$.index.path', function(){
         it('with single value', function(done){
+          mpath.set('arr.arr.$.0.a', 'singles', o, function (v) {
+            return 0;
+          });
+          assert.deepEqual([
+            { yep: [15], arr: [{ a: 0, e: 'a'}, { a: { c: 48, b: [1] }, e: 'b'}, { d: 'yep', e: 35 }] }
+          , { yep: 0 }
+          ], o.arr);
+
           mpath.set('arr.arr.$.0.a', 'singles', o);
           assert.deepEqual([
             { yep: [15], arr: [{ a: 'singles', e: 'a'}, { a: { c: 48, b: [1] }, e: 'b'}, { d: 'yep', e: 35 }] }
@@ -648,6 +840,14 @@ describe('mpath', function(){
           done();
         })
         it('with array', function(done){
+          mpath.set('arr.arr.$.0.a', [4,8,15,16,23,42], o, function (v) {
+            return 'nope'
+          });
+          assert.deepEqual([
+            { yep: [15], arr: [{ a: 'nope', e: 'a'}, { a: { c: 48, b: [1] }, e: 'b'}, { d: 'yep', e: 35 }] }
+          , { yep: 0}
+          ], o.arr);
+
           mpath.set('arr.arr.$.0.a', [4,8,15,16,23,42], o);
           assert.deepEqual([
             { yep: [15], arr: [{ a: [4,8,15,16,23,42], e: 'a'}, { a: { c: 48, b: [1] }, e: 'b'}, { d: 'yep', e: 35 }] }
@@ -666,8 +866,15 @@ describe('mpath', function(){
 
       describe('array.array.path.index', function(){
         it('with single value', function(done){
-          mpath.set('arr.arr.a.7', 47, o);
+          mpath.set('arr.arr.a.7', 47, o, function (v) {
+            return 1
+          });
+          assert.deepEqual([
+            { yep: [15], arr: [{ a: [4,8,15,16,23,42,108,1], e: 'a'}, { a: { c: 48, b: [1], '7': 1 }, e: 'b'}, { d: 'yep', e: 35 }] }
+          , { yep: 0}
+          ], o.arr);
 
+          mpath.set('arr.arr.a.7', 47, o);
           assert.deepEqual([
             { yep: [15], arr: [{ a: [4,8,15,16,23,42,108,47], e: 'a'}, { a: { c: 48, b: [1], '7': 47 }, e: 'b'}, { d: 'yep', e: 35 }] }
           , { yep: 0}
@@ -702,12 +909,31 @@ describe('mpath', function(){
           o.arr.push({ arr: [[]] });
           o.arr.push({ arr: [5] });
 
-          // test
-          mpath.set('arr.arr.e', 47, o);
-
           var weird = [];
+          weird.e = 'xmas';
+
+          // test
+          mpath.set('arr.arr.e', 47, o, function (v) {
+            return 'xmas'
+          });
+          assert.deepEqual([
+            { yep: [15], arr: [
+                  { a: [4,8,15,16,23,42,108,null], e: 'xmas'}
+                , { a: { c: 48, b: [1], '7': 46 }, e: 'xmas'}
+                , { d: 'yep', e: 'xmas' }
+              ]
+            }
+          , { yep: 0, arr: [{e: 'xmas'}, {e:'xmas'}] }
+          , { arr: 'something else' }
+          , { arr: ['something else'] }
+          , { arr: [weird] }
+          , { arr: [5] }
+          ]
+          , o.arr);
+
           weird.e = 47;
 
+          mpath.set('arr.arr.e', 47, o);
           assert.deepEqual([
             { yep: [15], arr: [
                   { a: [4,8,15,16,23,42,108,null], e: 47}
@@ -726,9 +952,30 @@ describe('mpath', function(){
           done();
         })
         it('with arrays', function(done){
-          mpath.set('arr.arr.e', [[1,2,3],[4,5],null,[],[6], [7,8,9]], o);
+          mpath.set('arr.arr.e', [[1,2,3],[4,5],null,[],[6], [7,8,9]], o, function (v) {
+            return 10;
+          });
 
           var weird = [];
+          weird.e = 10;
+
+          assert.deepEqual([
+            { yep: [15], arr: [
+                  { a: [4,8,15,16,23,42,108,null], e: 10}
+                , { a: { c: 48, b: [1], '7': 46 }, e: 10}
+                , { d: 'yep', e: 10 }
+              ]
+            }
+          , { yep: 0, arr: [{e: 10}, {e:10}] }
+          , { arr: 'something else' }
+          , { arr: ['something else'] }
+          , { arr: [weird] }
+          , { arr: [5] }
+          ]
+          , o.arr);
+
+          mpath.set('arr.arr.e', [[1,2,3],[4,5],null,[],[6], [7,8,9]], o);
+
           weird.e = 6;
 
           assert.deepEqual([
@@ -755,6 +1002,11 @@ describe('mpath', function(){
       var o = doc();
 
       it('works', function(done){
+        mpath.set('name', 'chan', o, special, function (v) {
+          return 'hi';
+        });
+        assert.deepEqual('hi', o.name);
+
         mpath.set('name', 'changer', o, special);
         assert.deepEqual('changer', o.name);
 
@@ -766,6 +1018,13 @@ describe('mpath', function(){
 
         mpath.set('comments.1.name', 'ttwwoo', o, special);
         assert.deepEqual({ name: 'two', _doc: { name: 'ttwwoo' }}, o.comments[1]);
+
+        mpath.set('comments.2.comments.1.comments.0.expander', 'adder', o, special, function (v) {
+          return 'super'
+        });
+        assert.deepEqual(
+            { val: 2, expander: 'super'}
+          , o.comments[2]._doc.comments[1]._doc.comments[0]);
 
         mpath.set('comments.2.comments.1.comments.0.expander', 'adder', o, special);
         assert.deepEqual(
@@ -786,13 +1045,20 @@ describe('mpath', function(){
         done();
       })
 
-      ////
       describe('array.path', function(){
         describe('with single non-array value', function(){
           it('works', function(done){
             o.arr[1]._doc = { special: true }
-            mpath.set('arr.yep', false, o, special);
 
+            mpath.set('arr.yep', false, o, special, function (v) {
+              return 'yes';
+            });
+            assert.deepEqual([
+              { yep: 'yes', arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }] }
+            , { yep: true, _doc: { special: true, yep: 'yes'}}
+            ], o.arr);
+
+            mpath.set('arr.yep', false, o, special);
             assert.deepEqual([
               { yep: false, arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }] }
             , { yep: true, _doc: { special: true, yep: false }}
@@ -803,8 +1069,15 @@ describe('mpath', function(){
         })
         describe('with array of values', function(){
           it('that are equal in length', function(done){
-            mpath.set('arr.yep', ['one',2], o, special);
+            mpath.set('arr.yep', ['one',2], o, special, function (v) {
+              return 2 === v ? 20 : v;
+            });
+            assert.deepEqual([
+              { yep: 'one', arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }] }
+            , { yep: true, _doc: { special: true, yep: 20}}
+            ], o.arr);
 
+            mpath.set('arr.yep', ['one',2], o, special);
             assert.deepEqual([
               { yep: 'one', arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }] }
             , { yep: true, _doc: { special: true, yep: 2}}
@@ -814,6 +1087,14 @@ describe('mpath', function(){
           })
 
           it('that is less than length', function(done){
+            mpath.set('arr.yep', [47], o, special, function (v) {
+              return 80;
+            });
+            assert.deepEqual([
+              { yep: 80, arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }] }
+            , { yep: true, _doc: { special: true, yep: 2}}
+            ], o.arr);
+
             mpath.set('arr.yep', [47], o, special);
             assert.deepEqual([
               { yep: 47, arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }] }
@@ -833,8 +1114,15 @@ describe('mpath', function(){
           })
 
           it('that is greater than length', function(done){
-            mpath.set('arr.yep', [5,6,7], o, special);
+            mpath.set('arr.yep', [5,6,7], o, special, function () {
+              return 'x';
+            });
+            assert.deepEqual([
+              { yep: 47, arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }], _doc: { yep: 'x', arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }] } }
+            , { yep: true, _doc: { special: true, yep: 'x'}}
+            ], o.arr);
 
+            mpath.set('arr.yep', [5,6,7], o, special);
             assert.deepEqual([
               { yep: 47, arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }], _doc: { yep: 5, arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }] } }
             , { yep: true, _doc: { special: true, yep: 6}}
@@ -848,8 +1136,16 @@ describe('mpath', function(){
       describe('array.$.path', function(){
         describe('with single non-array value', function(){
           it('copies the value to each item in array', function(done){
-            mpath.set('arr.$.yep', {xtra: 'double good'}, o, special);
+            mpath.set('arr.$.yep', {xtra: 'double good'}, o, special, function (v) {
+              return 9;
+            });
+            assert.deepEqual([
+              { yep: 47, arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }]
+                , _doc: { yep: 9, arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }] } }
+            , { yep: true, _doc: { special: true, yep: 9}}
+            ], o.arr);
 
+            mpath.set('arr.$.yep', {xtra: 'double good'}, o, special);
             assert.deepEqual([
               { yep: 47, arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }]
                 , _doc: { yep: {xtra:'double good'}, arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }] } }
@@ -861,8 +1157,16 @@ describe('mpath', function(){
         })
         describe('with array of values', function(){
           it('copies the value to each item in array', function(done){
-            mpath.set('arr.$.yep', [15], o, special);
+            mpath.set('arr.$.yep', [15], o, special, function (v) {
+              return 'array'
+            });
+            assert.deepEqual([
+              { yep: 47, arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }]
+                , _doc: { yep: 'array', arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }] } }
+            , { yep: true, _doc: { special: true, yep: 'array'}}
+            ], o.arr);
 
+            mpath.set('arr.$.yep', [15], o, special);
             assert.deepEqual([
               { yep: 47, arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }]
                 , _doc: { yep: [15], arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }] } }
@@ -876,8 +1180,16 @@ describe('mpath', function(){
 
       describe('array.index.path', function(){
         it('works', function(done){
-          mpath.set('arr.1.yep', 0, o, special);
+          mpath.set('arr.1.yep', 0, o, special, function (v) {
+            return 1;
+          });
+          assert.deepEqual([
+              { yep: 47, arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }]
+                , _doc: { yep: [15], arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }] } }
+            , { yep: true, _doc: { special: true, yep: 1}}
+          ], o.arr);
 
+          mpath.set('arr.1.yep', 0, o, special);
           assert.deepEqual([
               { yep: 47, arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }]
                 , _doc: { yep: [15], arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }] } }
@@ -890,8 +1202,16 @@ describe('mpath', function(){
 
       describe('array.index.array.path', function(){
         it('with single value', function(done){
-          mpath.set('arr.0.arr.e', 35, o, special);
+          mpath.set('arr.0.arr.e', 35, o, special, function (v) {
+            return 30
+          });
+          assert.deepEqual([
+              { yep: 47, arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }]
+                , _doc: { yep: [15], arr: [{ a: { b: 47 }, e: 30}, { a: { c: 48 }, e: 30}, { d: 'yep', e: 30 }] } }
+            , { yep: true, _doc: { special: true, yep: 0}}
+          ], o.arr);
 
+          mpath.set('arr.0.arr.e', 35, o, special);
           assert.deepEqual([
               { yep: 47, arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }]
                 , _doc: { yep: [15], arr: [{ a: { b: 47 }, e: 35}, { a: { c: 48 }, e: 35}, { d: 'yep', e: 35 }] } }
@@ -901,8 +1221,16 @@ describe('mpath', function(){
           done();
         })
         it('with array', function(done){
-          mpath.set('arr.0.arr.e', ['a','b'], o, special);
+          mpath.set('arr.0.arr.e', ['a','b'], o, special, function (v) {
+            return 'a' === v ? 'A' : v;
+          });
+          assert.deepEqual([
+              { yep: 47, arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }]
+                , _doc: { yep: [15], arr: [{ a: { b: 47 }, e: 'A'}, { a: { c: 48 }, e: 'b'}, { d: 'yep', e: 35 }] } }
+            , { yep: true, _doc: { special: true, yep: 0}}
+          ], o.arr);
 
+          mpath.set('arr.0.arr.e', ['a','b'], o, special);
           assert.deepEqual([
               { yep: 47, arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }]
                 , _doc: { yep: [15], arr: [{ a: { b: 47 }, e: 'a'}, { a: { c: 48 }, e: 'b'}, { d: 'yep', e: 35 }] } }
@@ -915,8 +1243,16 @@ describe('mpath', function(){
 
       describe('array.index.array.path.path', function(){
         it('with single value', function(done){
-          mpath.set('arr.0.arr.a.b', 36, o, special);
+          mpath.set('arr.0.arr.a.b', 36, o, special, function (v) {
+            return 20
+          });
+          assert.deepEqual([
+              { yep: 47, arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }]
+                , _doc: { yep: [15], arr: [{ a: { b: 20 }, e: 'a'}, { a: { c: 48, b: 20 }, e: 'b'}, { d: 'yep', e: 35 }] } }
+            , { yep: true, _doc: { special: true, yep: 0}}
+          ], o.arr);
 
+          mpath.set('arr.0.arr.a.b', 36, o, special);
           assert.deepEqual([
               { yep: 47, arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }]
                 , _doc: { yep: [15], arr: [{ a: { b: 36 }, e: 'a'}, { a: { c: 48, b: 36 }, e: 'b'}, { d: 'yep', e: 35 }] } }
@@ -926,8 +1262,16 @@ describe('mpath', function(){
           done();
         })
         it('with array', function(done){
-          mpath.set('arr.0.arr.a.b', [1,2,3,4], o, special);
+          mpath.set('arr.0.arr.a.b', [1,2,3,4], o, special, function (v) {
+            return v*2;
+          });
+          assert.deepEqual([
+              { yep: 47, arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }]
+                , _doc: { yep: [15], arr: [{ a: { b: 2 }, e: 'a'}, { a: { c: 48, b: 4 }, e: 'b'}, { d: 'yep', e: 35 }] } }
+            , { yep: true, _doc: { special: true, yep: 0}}
+          ], o.arr);
 
+          mpath.set('arr.0.arr.a.b', [1,2,3,4], o, special);
           assert.deepEqual([
               { yep: 47, arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }]
                 , _doc: { yep: [15], arr: [{ a: { b: 1 }, e: 'a'}, { a: { c: 48, b: 2 }, e: 'b'}, { d: 'yep', e: 35 }] } }
@@ -940,8 +1284,16 @@ describe('mpath', function(){
 
       describe('array.index.array.$.path.path', function(){
         it('with single value', function(done){
-          mpath.set('arr.0.arr.$.a.b', '$', o, special);
+          mpath.set('arr.0.arr.$.a.b', '$', o, special, function (v) {
+            return 'dollaz'
+          });
+          assert.deepEqual([
+              { yep: 47, arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }]
+                , _doc: { yep: [15], arr: [{ a: { b: 'dollaz' }, e: 'a'}, { a: { c: 48, b: 'dollaz' }, e: 'b'}, { d: 'yep', e: 35 }] } }
+            , { yep: true, _doc: { special: true, yep: 0}}
+          ], o.arr);
 
+          mpath.set('arr.0.arr.$.a.b', '$', o, special);
           assert.deepEqual([
               { yep: 47, arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }]
                 , _doc: { yep: [15], arr: [{ a: { b: '$' }, e: 'a'}, { a: { c: 48, b: '$' }, e: 'b'}, { d: 'yep', e: 35 }] } }
@@ -951,8 +1303,16 @@ describe('mpath', function(){
           done();
         })
         it('with array', function(done){
-          mpath.set('arr.0.arr.$.a.b', [1], o, special);
+          mpath.set('arr.0.arr.$.a.b', [1], o, special, function (v) {
+            return {};
+          });
+          assert.deepEqual([
+              { yep: 47, arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }]
+                , _doc: { yep: [15], arr: [{ a: { b: {} }, e: 'a'}, { a: { c: 48, b: {} }, e: 'b'}, { d: 'yep', e: 35 }] } }
+            , { yep: true, _doc: { special: true, yep: 0}}
+          ], o.arr);
 
+          mpath.set('arr.0.arr.$.a.b', [1], o, special);
           assert.deepEqual([
               { yep: 47, arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }]
                 , _doc: { yep: [15], arr: [{ a: { b: [1] }, e: 'a'}, { a: { c: 48, b: [1] }, e: 'b'}, { d: 'yep', e: 35 }] } }
@@ -965,8 +1325,16 @@ describe('mpath', function(){
 
       describe('array.array.index.path', function(){
         it('with single value', function(done){
-          mpath.set('arr.arr.0.a', 'single', o, special);
+          mpath.set('arr.arr.0.a', 'single', o, special, function (v) {
+            return 88;
+          });
+          assert.deepEqual([
+              { yep: 47, arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }]
+                , _doc: { yep: [15], arr: [{ a: 88, e: 'a'}, { a: { c: 48, b: [1] }, e: 'b'}, { d: 'yep', e: 35 }] } }
+            , { yep: true, _doc: { special: true, yep: 0}}
+          ], o.arr);
 
+          mpath.set('arr.arr.0.a', 'single', o, special);
           assert.deepEqual([
               { yep: 47, arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }]
                 , _doc: { yep: [15], arr: [{ a: 'single', e: 'a'}, { a: { c: 48, b: [1] }, e: 'b'}, { d: 'yep', e: 35 }] } }
@@ -976,8 +1344,16 @@ describe('mpath', function(){
           done();
         })
         it('with array', function(done){
-          mpath.set('arr.arr.0.a', [4,8,15,16,23,42], o, special);
+          mpath.set('arr.arr.0.a', [4,8,15,16,23,42], o, special, function (v) {
+            return v*2;
+          });
+          assert.deepEqual([
+              { yep: 47, arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }]
+                , _doc: { yep: [15], arr: [{ a: 8, e: 'a'}, { a: { c: 48, b: [1] }, e: 'b'}, { d: 'yep', e: 35 }] } }
+            , { yep: true, _doc: { special: true, yep: 0}}
+          ], o.arr);
 
+          mpath.set('arr.arr.0.a', [4,8,15,16,23,42], o, special);
           assert.deepEqual([
               { yep: 47, arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }]
                 , _doc: { yep: [15], arr: [{ a: 4, e: 'a'}, { a: { c: 48, b: [1] }, e: 'b'}, { d: 'yep', e: 35 }] } }
@@ -990,6 +1366,15 @@ describe('mpath', function(){
 
       describe('array.array.$.index.path', function(){
         it('with single value', function(done){
+          mpath.set('arr.arr.$.0.a', 'singles', o, special, function (v) {
+            return v.toUpperCase();
+          });
+          assert.deepEqual([
+              { yep: 47, arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }]
+                , _doc: { yep: [15], arr: [{ a: 'SINGLES', e: 'a'}, { a: { c: 48, b: [1] }, e: 'b'}, { d: 'yep', e: 35 }] } }
+            , { yep: true, _doc: { special: true, yep: 0}}
+          ], o.arr);
+
           mpath.set('arr.arr.$.0.a', 'singles', o, special);
           assert.deepEqual([
               { yep: 47, arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }]
@@ -1007,6 +1392,15 @@ describe('mpath', function(){
           done();
         })
         it('with array', function(done){
+          mpath.set('arr.arr.$.0.a', [4,8,15,16,23,42], o, special, function (v) {
+            return Array
+          });
+          assert.deepEqual([
+              { yep: 47, arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }]
+                , _doc: { yep: [15], arr: [{ a: Array, e: 'a'}, { a: { c: 48, b: [1] }, e: 'b'}, { d: 'yep', e: 35 }] } }
+            , { yep: true, _doc: { special: true, yep: 0}}
+          ], o.arr);
+
           mpath.set('arr.arr.$.0.a', [4,8,15,16,23,42], o, special);
           assert.deepEqual([
               { yep: 47, arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }]
@@ -1027,8 +1421,16 @@ describe('mpath', function(){
 
       describe('array.array.path.index', function(){
         it('with single value', function(done){
-          mpath.set('arr.arr.a.7', 47, o, special);
+          mpath.set('arr.arr.a.7', 47, o, special, function (v) {
+            return Object;
+          });
+          assert.deepEqual([
+              { yep: 47, arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }]
+                , _doc: { yep: [15], arr: [{ a: [4,8,15,16,23,42,108,Object], e: 'a'}, { a: { c: 48, b: [1], '7': Object }, e: 'b'}, { d: 'yep', e: 35 }] } }
+            , { yep: true, _doc: { special: true, yep: 0}}
+          ], o.arr);
 
+          mpath.set('arr.arr.a.7', 47, o, special);
           assert.deepEqual([
               { yep: 47, arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }]
                 , _doc: { yep: [15], arr: [{ a: [4,8,15,16,23,42,108,47], e: 'a'}, { a: { c: 48, b: [1], '7': 47 }, e: 'b'}, { d: 'yep', e: 35 }] } }
@@ -1039,12 +1441,24 @@ describe('mpath', function(){
         })
         it('with array', function(done){
           o.arr[1]._doc.arr = [{ a: [] }, { a: [] }, { a: null }];
-          mpath.set('arr.arr.a.7', [[null,46], [undefined, 'woot']], o, special);
+          mpath.set('arr.arr.a.7', [[null,46], [undefined, 'woot']], o, special, function (v) {
+            return undefined === v ? 'nope' : v;
+          });
 
           var a1 = [];
           var a2 = [];
-          a1[7] = undefined;
+          a1[7] = 'nope';
           a2[7] = 'woot';
+
+          assert.deepEqual([
+              { yep: 47, arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }]
+                , _doc: { yep: [15], arr: [{ a: [4,8,15,16,23,42,108,null], e: 'a'}, { a: { c: 48, b: [1], '7': 46 }, e: 'b'}, { d: 'yep', e: 35 }] } }
+            , { yep: true, _doc: { arr: [{a:a1},{a:a2},{a:null}], special: true, yep: 0}}
+          ], o.arr);
+
+          mpath.set('arr.arr.a.7', [[null,46], [undefined, 'woot']], o, special);
+
+          a1[7] = undefined;
 
           assert.deepEqual([
               { yep: 47, arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }]
