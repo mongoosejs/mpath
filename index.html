@@ -1,0 +1,311 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>mpath by aheckmann</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1 class="header">mpath</h1>
+        <p class="header">Get/set javascript object values using MongoDB-like path notation.</p>
+
+        <ul>
+          <li class="download"><a class="buttons" href="https://github.com/aheckmann/mpath/zipball/master">Download ZIP</a></li>
+          <li class="download"><a class="buttons" href="https://github.com/aheckmann/mpath/tarball/master">Download TAR</a></li>
+          <li><a class="buttons github" href="https://github.com/aheckmann/mpath">View On GitHub</a></li>
+        </ul>
+
+        <p class="header">This project is maintained by <a class="header name" href="https://github.com/aheckmann">aheckmann</a></p>
+
+
+      </header>
+      <section>
+        <h1>mpath</h1>
+
+<p>{G,S}et javascript object values using MongoDB-like path notation.</p>
+
+<h3>Getting</h3>
+
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">mpath</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'mpath'</span><span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">obj</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">comments</span><span class="o">:</span> <span class="p">[</span>
+      <span class="p">{</span> <span class="nx">title</span><span class="o">:</span> <span class="s1">'funny'</span> <span class="p">},</span>
+      <span class="p">{</span> <span class="nx">title</span><span class="o">:</span> <span class="s1">'exciting!'</span> <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+
+<span class="nx">mpath</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'comments.1.title'</span><span class="p">,</span> <span class="nx">obj</span><span class="p">)</span> <span class="c1">// 'exciting!'</span>
+</pre></div>
+
+<p><code>mpath.get</code> supports array property notation as well.</p>
+
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">obj</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">comments</span><span class="o">:</span> <span class="p">[</span>
+      <span class="p">{</span> <span class="nx">title</span><span class="o">:</span> <span class="s1">'funny'</span> <span class="p">},</span>
+      <span class="p">{</span> <span class="nx">title</span><span class="o">:</span> <span class="s1">'exciting!'</span> <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+
+<span class="nx">mpath</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'comments.title'</span><span class="p">,</span> <span class="nx">obj</span><span class="p">)</span> <span class="c1">// ['funny', 'exciting!']</span>
+</pre></div>
+
+<p>Array property and indexing syntax, when used together, are very powerful.</p>
+
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">obj</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="nx">array</span><span class="o">:</span> <span class="p">[</span>
+      <span class="p">{</span> <span class="nx">o</span><span class="o">:</span> <span class="p">{</span> <span class="nx">array</span><span class="o">:</span> <span class="p">[{</span><span class="nx">x</span><span class="o">:</span> <span class="p">{</span><span class="nx">b</span><span class="o">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">8</span><span class="p">]}},</span> <span class="p">{</span> <span class="nx">y</span><span class="o">:</span> <span class="mi">10</span><span class="p">}</span> <span class="p">]</span> <span class="p">}}</span>
+    <span class="p">,</span> <span class="p">{</span> <span class="nx">o</span><span class="o">:</span> <span class="p">{</span> <span class="nx">array</span><span class="o">:</span> <span class="p">[{</span><span class="nx">x</span><span class="o">:</span> <span class="p">{</span><span class="nx">b</span><span class="o">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]}},</span> <span class="p">{</span> <span class="nx">x</span><span class="o">:</span> <span class="p">{</span><span class="nx">z</span><span class="o">:</span> <span class="mi">10</span> <span class="p">}},</span> <span class="p">{</span> <span class="nx">x</span><span class="o">:</span> <span class="s1">'Turkey Day'</span> <span class="p">}]</span> <span class="p">}}</span>
+    <span class="p">,</span> <span class="p">{</span> <span class="nx">o</span><span class="o">:</span> <span class="p">{</span> <span class="nx">array</span><span class="o">:</span> <span class="p">[{</span><span class="nx">x</span><span class="o">:</span> <span class="p">{</span><span class="nx">b</span><span class="o">:</span> <span class="kc">null</span> <span class="p">}},</span> <span class="p">{</span> <span class="nx">x</span><span class="o">:</span> <span class="p">{</span> <span class="nx">b</span><span class="o">:</span> <span class="p">[</span><span class="kc">null</span><span class="p">,</span> <span class="mi">1</span><span class="p">]}}]</span> <span class="p">}}</span>
+    <span class="p">,</span> <span class="p">{</span> <span class="nx">o</span><span class="o">:</span> <span class="p">{</span> <span class="nx">array</span><span class="o">:</span> <span class="p">[{</span><span class="nx">x</span><span class="o">:</span> <span class="kc">null</span> <span class="p">}]</span> <span class="p">}}</span>
+    <span class="p">,</span> <span class="p">{</span> <span class="nx">o</span><span class="o">:</span> <span class="p">{</span> <span class="nx">array</span><span class="o">:</span> <span class="p">[{</span><span class="nx">y</span><span class="o">:</span> <span class="mi">3</span> <span class="p">}]</span> <span class="p">}}</span>
+    <span class="p">,</span> <span class="p">{</span> <span class="nx">o</span><span class="o">:</span> <span class="p">{</span> <span class="nx">array</span><span class="o">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">null</span><span class="p">]</span> <span class="p">}}</span>
+    <span class="p">,</span> <span class="p">{</span> <span class="nx">o</span><span class="o">:</span> <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="s1">'ha'</span> <span class="p">}}</span>
+  <span class="p">];</span>
+<span class="p">}</span>
+
+<span class="kd">var</span> <span class="nx">found</span> <span class="o">=</span> <span class="nx">mpath</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'array.o.array.x.b.1'</span><span class="p">,</span> <span class="nx">obj</span><span class="p">);</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">found</span><span class="p">);</span> <span class="c1">// prints..</span>
+
+    <span class="p">[</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="kc">undefined</span><span class="p">]</span>
+    <span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="kc">undefined</span><span class="p">,</span> <span class="kc">undefined</span><span class="p">]</span>
+    <span class="p">,</span> <span class="p">[</span><span class="kc">null</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="p">,</span> <span class="p">[</span><span class="kc">null</span><span class="p">]</span>
+    <span class="p">,</span> <span class="p">[</span><span class="kc">undefined</span><span class="p">]</span>
+    <span class="p">,</span> <span class="p">[</span><span class="kc">undefined</span><span class="p">,</span> <span class="kc">undefined</span><span class="p">,</span> <span class="kc">undefined</span><span class="p">]</span>
+    <span class="p">,</span> <span class="kc">undefined</span>
+    <span class="p">]</span>
+
+</pre></div>
+
+<h5>Field selection rules:</h5>
+
+<p>The following rules are iteratively applied to each <code>segment</code> in the passed <code>path</code>. For example:</p>
+
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">path</span> <span class="o">=</span> <span class="s1">'one.two.14'</span><span class="p">;</span> <span class="c1">// path</span>
+<span class="s1">'one'</span> <span class="c1">// segment 0</span>
+<span class="s1">'two'</span> <span class="c1">// segment 1</span>
+<span class="mi">14</span>    <span class="c1">// segment 2</span>
+</pre></div>
+
+<ul>
+<li>1) when value of the segment parent is not an array, return the value of <code>parent.segment</code>
+</li>
+<li>2) when value of the segment parent is an array
+
+<ul>
+<li>a) if the segment is an integer, replace the parent array with the value at <code>parent[segment]</code>
+</li>
+<li>b) if not an integer, keep the array but replace each array <code>item</code> with the value returned from calling <code>get(remainingSegments, item)</code> or undefined if falsey.</li>
+</ul>
+</li>
+</ul><h5>Maps</h5>
+
+<p><code>mpath.get</code> also accepts an optional <code>map</code> argument which receives each individual found value. The value returned from the <code>map</code> function will be used in the original found values place.</p>
+
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">obj</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">comments</span><span class="o">:</span> <span class="p">[</span>
+      <span class="p">{</span> <span class="nx">title</span><span class="o">:</span> <span class="s1">'funny'</span> <span class="p">},</span>
+      <span class="p">{</span> <span class="nx">title</span><span class="o">:</span> <span class="s1">'exciting!'</span> <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+
+<span class="nx">mpath</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'comments.title'</span><span class="p">,</span> <span class="nx">obj</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">val</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="s1">'funny'</span> <span class="o">==</span> <span class="nx">val</span>
+    <span class="o">?</span> <span class="s1">'amusing'</span>
+    <span class="o">:</span> <span class="nx">val</span><span class="p">;</span>
+<span class="p">});</span>
+<span class="c1">// ['amusing', 'exciting!']</span>
+</pre></div>
+
+<h3>Setting</h3>
+
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">obj</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">comments</span><span class="o">:</span> <span class="p">[</span>
+      <span class="p">{</span> <span class="nx">title</span><span class="o">:</span> <span class="s1">'funny'</span> <span class="p">},</span>
+      <span class="p">{</span> <span class="nx">title</span><span class="o">:</span> <span class="s1">'exciting!'</span> <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+
+<span class="nx">mpath</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">'comments.1.title'</span><span class="p">,</span> <span class="s1">'hilarious'</span><span class="p">,</span> <span class="nx">obj</span><span class="p">)</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">obj</span><span class="p">.</span><span class="nx">comments</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="nx">title</span><span class="p">)</span> <span class="c1">// 'hilarious'</span>
+</pre></div>
+
+<p><code>mpath.set</code> supports the same array property notation as <code>mpath.get</code>.</p>
+
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">obj</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">comments</span><span class="o">:</span> <span class="p">[</span>
+      <span class="p">{</span> <span class="nx">title</span><span class="o">:</span> <span class="s1">'funny'</span> <span class="p">},</span>
+      <span class="p">{</span> <span class="nx">title</span><span class="o">:</span> <span class="s1">'exciting!'</span> <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+
+<span class="nx">mpath</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">'comments.title'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'hilarious'</span><span class="p">,</span> <span class="s1">'fruity'</span><span class="p">],</span> <span class="nx">obj</span><span class="p">);</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">obj</span><span class="p">);</span> <span class="c1">// prints..</span>
+
+  <span class="p">{</span> <span class="nx">comments</span><span class="o">:</span> <span class="p">[</span>
+      <span class="p">{</span> <span class="nx">title</span><span class="o">:</span> <span class="s1">'hilarious'</span> <span class="p">},</span>
+      <span class="p">{</span> <span class="nx">title</span><span class="o">:</span> <span class="s1">'fruity'</span> <span class="p">}</span>
+  <span class="p">]}</span>
+</pre></div>
+
+<p>Array property and indexing syntax can be used together also when setting.</p>
+
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">obj</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="nx">array</span><span class="o">:</span> <span class="p">[</span>
+      <span class="p">{</span> <span class="nx">o</span><span class="o">:</span> <span class="p">{</span> <span class="nx">array</span><span class="o">:</span> <span class="p">[{</span><span class="nx">x</span><span class="o">:</span> <span class="p">{</span><span class="nx">b</span><span class="o">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">8</span><span class="p">]}},</span> <span class="p">{</span> <span class="nx">y</span><span class="o">:</span> <span class="mi">10</span><span class="p">}</span> <span class="p">]</span> <span class="p">}}</span>
+    <span class="p">,</span> <span class="p">{</span> <span class="nx">o</span><span class="o">:</span> <span class="p">{</span> <span class="nx">array</span><span class="o">:</span> <span class="p">[{</span><span class="nx">x</span><span class="o">:</span> <span class="p">{</span><span class="nx">b</span><span class="o">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]}},</span> <span class="p">{</span> <span class="nx">x</span><span class="o">:</span> <span class="p">{</span><span class="nx">z</span><span class="o">:</span> <span class="mi">10</span> <span class="p">}},</span> <span class="p">{</span> <span class="nx">x</span><span class="o">:</span> <span class="s1">'Turkey Day'</span> <span class="p">}]</span> <span class="p">}}</span>
+    <span class="p">,</span> <span class="p">{</span> <span class="nx">o</span><span class="o">:</span> <span class="p">{</span> <span class="nx">array</span><span class="o">:</span> <span class="p">[{</span><span class="nx">x</span><span class="o">:</span> <span class="p">{</span><span class="nx">b</span><span class="o">:</span> <span class="kc">null</span> <span class="p">}},</span> <span class="p">{</span> <span class="nx">x</span><span class="o">:</span> <span class="p">{</span> <span class="nx">b</span><span class="o">:</span> <span class="p">[</span><span class="kc">null</span><span class="p">,</span> <span class="mi">1</span><span class="p">]}}]</span> <span class="p">}}</span>
+    <span class="p">,</span> <span class="p">{</span> <span class="nx">o</span><span class="o">:</span> <span class="p">{</span> <span class="nx">array</span><span class="o">:</span> <span class="p">[{</span><span class="nx">x</span><span class="o">:</span> <span class="kc">null</span> <span class="p">}]</span> <span class="p">}}</span>
+    <span class="p">,</span> <span class="p">{</span> <span class="nx">o</span><span class="o">:</span> <span class="p">{</span> <span class="nx">array</span><span class="o">:</span> <span class="p">[{</span><span class="nx">y</span><span class="o">:</span> <span class="mi">3</span> <span class="p">}]</span> <span class="p">}}</span>
+    <span class="p">,</span> <span class="p">{</span> <span class="nx">o</span><span class="o">:</span> <span class="p">{</span> <span class="nx">array</span><span class="o">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">null</span><span class="p">]</span> <span class="p">}}</span>
+    <span class="p">,</span> <span class="p">{</span> <span class="nx">o</span><span class="o">:</span> <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="s1">'ha'</span> <span class="p">}}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+
+<span class="nx">mpath</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">'array.1.o'</span><span class="p">,</span> <span class="s1">'this was changed'</span><span class="p">,</span> <span class="nx">obj</span><span class="p">);</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">require</span><span class="p">(</span><span class="s1">'util'</span><span class="p">).</span><span class="nx">inspect</span><span class="p">(</span><span class="nx">obj</span><span class="p">,</span> <span class="kc">false</span><span class="p">,</span> <span class="mi">1000</span><span class="p">));</span> <span class="c1">// prints..</span>
+
+<span class="p">{</span>
+  <span class="nx">array</span><span class="o">:</span> <span class="p">[</span>
+      <span class="p">{</span> <span class="nx">o</span><span class="o">:</span> <span class="p">{</span> <span class="nx">array</span><span class="o">:</span> <span class="p">[{</span><span class="nx">x</span><span class="o">:</span> <span class="p">{</span><span class="nx">b</span><span class="o">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">8</span><span class="p">]}},</span> <span class="p">{</span> <span class="nx">y</span><span class="o">:</span> <span class="mi">10</span><span class="p">}</span> <span class="p">]</span> <span class="p">}}</span>
+    <span class="p">,</span> <span class="p">{</span> <span class="nx">o</span><span class="o">:</span> <span class="s1">'this was changed'</span> <span class="p">}</span>
+    <span class="p">,</span> <span class="p">{</span> <span class="nx">o</span><span class="o">:</span> <span class="p">{</span> <span class="nx">array</span><span class="o">:</span> <span class="p">[{</span><span class="nx">x</span><span class="o">:</span> <span class="p">{</span><span class="nx">b</span><span class="o">:</span> <span class="kc">null</span> <span class="p">}},</span> <span class="p">{</span> <span class="nx">x</span><span class="o">:</span> <span class="p">{</span> <span class="nx">b</span><span class="o">:</span> <span class="p">[</span><span class="kc">null</span><span class="p">,</span> <span class="mi">1</span><span class="p">]}}]</span> <span class="p">}}</span>
+    <span class="p">,</span> <span class="p">{</span> <span class="nx">o</span><span class="o">:</span> <span class="p">{</span> <span class="nx">array</span><span class="o">:</span> <span class="p">[{</span><span class="nx">x</span><span class="o">:</span> <span class="kc">null</span> <span class="p">}]</span> <span class="p">}}</span>
+    <span class="p">,</span> <span class="p">{</span> <span class="nx">o</span><span class="o">:</span> <span class="p">{</span> <span class="nx">array</span><span class="o">:</span> <span class="p">[{</span><span class="nx">y</span><span class="o">:</span> <span class="mi">3</span> <span class="p">}]</span> <span class="p">}}</span>
+    <span class="p">,</span> <span class="p">{</span> <span class="nx">o</span><span class="o">:</span> <span class="p">{</span> <span class="nx">array</span><span class="o">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">null</span><span class="p">]</span> <span class="p">}}</span>
+    <span class="p">,</span> <span class="p">{</span> <span class="nx">o</span><span class="o">:</span> <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="s1">'ha'</span> <span class="p">}}</span>
+  <span class="p">];</span>
+<span class="p">}</span>
+
+<span class="nx">mpath</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">'array.o.array.x'</span><span class="p">,</span> <span class="s1">'this was changed too'</span><span class="p">,</span> <span class="nx">obj</span><span class="p">);</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">require</span><span class="p">(</span><span class="s1">'util'</span><span class="p">).</span><span class="nx">inspect</span><span class="p">(</span><span class="nx">obj</span><span class="p">,</span> <span class="kc">false</span><span class="p">,</span> <span class="mi">1000</span><span class="p">));</span> <span class="c1">// prints..</span>
+
+<span class="p">{</span>
+  <span class="nx">array</span><span class="o">:</span> <span class="p">[</span>
+      <span class="p">{</span> <span class="nx">o</span><span class="o">:</span> <span class="p">{</span> <span class="nx">array</span><span class="o">:</span> <span class="p">[{</span><span class="nx">x</span><span class="o">:</span> <span class="s1">'this was changed too'</span><span class="p">},</span> <span class="p">{</span> <span class="nx">y</span><span class="o">:</span> <span class="mi">10</span><span class="p">,</span> <span class="nx">x</span><span class="o">:</span> <span class="s1">'this was changed too'</span><span class="p">}</span> <span class="p">]</span> <span class="p">}}</span>
+    <span class="p">,</span> <span class="p">{</span> <span class="nx">o</span><span class="o">:</span> <span class="s1">'this was changed'</span> <span class="p">}</span>
+    <span class="p">,</span> <span class="p">{</span> <span class="nx">o</span><span class="o">:</span> <span class="p">{</span> <span class="nx">array</span><span class="o">:</span> <span class="p">[{</span><span class="nx">x</span><span class="o">:</span> <span class="s1">'this was changed too'</span><span class="p">},</span> <span class="p">{</span> <span class="nx">x</span><span class="o">:</span> <span class="s1">'this was changed too'</span><span class="p">}]</span> <span class="p">}}</span>
+    <span class="p">,</span> <span class="p">{</span> <span class="nx">o</span><span class="o">:</span> <span class="p">{</span> <span class="nx">array</span><span class="o">:</span> <span class="p">[{</span><span class="nx">x</span><span class="o">:</span> <span class="s1">'this was changed too'</span><span class="p">}]</span> <span class="p">}}</span>
+    <span class="p">,</span> <span class="p">{</span> <span class="nx">o</span><span class="o">:</span> <span class="p">{</span> <span class="nx">array</span><span class="o">:</span> <span class="p">[{</span><span class="nx">x</span><span class="o">:</span> <span class="s1">'this was changed too'</span><span class="p">,</span> <span class="nx">y</span><span class="o">:</span> <span class="mi">3</span> <span class="p">}]</span> <span class="p">}}</span>
+    <span class="p">,</span> <span class="p">{</span> <span class="nx">o</span><span class="o">:</span> <span class="p">{</span> <span class="nx">array</span><span class="o">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">null</span><span class="p">]</span> <span class="p">}}</span>
+    <span class="p">,</span> <span class="p">{</span> <span class="nx">o</span><span class="o">:</span> <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="s1">'ha'</span> <span class="p">}}</span>
+  <span class="p">];</span>
+<span class="p">}</span>
+</pre></div>
+
+<h4>Setting arrays</h4>
+
+<p>By default, setting a property within an array to another array results in each element of the new array being set to the item in the destination array at the matching index. An example is helpful.</p>
+
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">obj</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">comments</span><span class="o">:</span> <span class="p">[</span>
+      <span class="p">{</span> <span class="nx">title</span><span class="o">:</span> <span class="s1">'funny'</span> <span class="p">},</span>
+      <span class="p">{</span> <span class="nx">title</span><span class="o">:</span> <span class="s1">'exciting!'</span> <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+
+<span class="nx">mpath</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">'comments.title'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'hilarious'</span><span class="p">,</span> <span class="s1">'fruity'</span><span class="p">],</span> <span class="nx">obj</span><span class="p">);</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">obj</span><span class="p">);</span> <span class="c1">// prints..</span>
+
+  <span class="p">{</span> <span class="nx">comments</span><span class="o">:</span> <span class="p">[</span>
+      <span class="p">{</span> <span class="nx">title</span><span class="o">:</span> <span class="s1">'hilarious'</span> <span class="p">},</span>
+      <span class="p">{</span> <span class="nx">title</span><span class="o">:</span> <span class="s1">'fruity'</span> <span class="p">}</span>
+  <span class="p">]}</span>
+</pre></div>
+
+<p>If we do not desire this destructuring-like assignment behavior we may instead specify the <code>$</code> operator in the path being set to force the array to be copied directly.</p>
+
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">obj</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">comments</span><span class="o">:</span> <span class="p">[</span>
+      <span class="p">{</span> <span class="nx">title</span><span class="o">:</span> <span class="s1">'funny'</span> <span class="p">},</span>
+      <span class="p">{</span> <span class="nx">title</span><span class="o">:</span> <span class="s1">'exciting!'</span> <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+
+<span class="nx">mpath</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">'comments.$.title'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'hilarious'</span><span class="p">,</span> <span class="s1">'fruity'</span><span class="p">],</span> <span class="nx">obj</span><span class="p">);</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">obj</span><span class="p">);</span> <span class="c1">// prints..</span>
+
+  <span class="p">{</span> <span class="nx">comments</span><span class="o">:</span> <span class="p">[</span>
+      <span class="p">{</span> <span class="nx">title</span><span class="o">:</span> <span class="p">[</span><span class="s1">'hilarious'</span><span class="p">,</span> <span class="s1">'fruity'</span><span class="p">]</span> <span class="p">},</span>
+      <span class="p">{</span> <span class="nx">title</span><span class="o">:</span> <span class="p">[</span><span class="s1">'hilarious'</span><span class="p">,</span> <span class="s1">'fruity'</span><span class="p">]</span> <span class="p">}</span>
+  <span class="p">]}</span>
+</pre></div>
+
+<h4>Field assignment rules</h4>
+
+<p>The rules utilized mirror those used on <code>mpath.get</code>, meaning we can take values returned from <code>mpath.get</code>, update them, and reassign them using <code>mpath.set</code>. Note that setting nested arrays of arrays can get unweildy quickly. Check out the <a href="https://github.com/aheckmann/mpath/blob/master/test/index.js">tests</a> for more extreme examples.</p>
+
+<h5>Maps</h5>
+
+<p><code>mpath.set</code> also accepts an optional <code>map</code> argument which receives each individual value being set. The value returned from the <code>map</code> function will be used in the original values place.</p>
+
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">obj</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">comments</span><span class="o">:</span> <span class="p">[</span>
+      <span class="p">{</span> <span class="nx">title</span><span class="o">:</span> <span class="s1">'funny'</span> <span class="p">},</span>
+      <span class="p">{</span> <span class="nx">title</span><span class="o">:</span> <span class="s1">'exciting!'</span> <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+
+<span class="nx">mpath</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">'comments.title'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'hilarious'</span><span class="p">,</span> <span class="s1">'fruity'</span><span class="p">],</span> <span class="nx">obj</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">val</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">val</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+<span class="p">});</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">obj</span><span class="p">);</span> <span class="c1">// prints..</span>
+
+  <span class="p">{</span> <span class="nx">comments</span><span class="o">:</span> <span class="p">[</span>
+      <span class="p">{</span> <span class="nx">title</span><span class="o">:</span> <span class="mi">9</span> <span class="p">},</span>
+      <span class="p">{</span> <span class="nx">title</span><span class="o">:</span> <span class="mi">6</span> <span class="p">}</span>
+  <span class="p">]}</span>
+</pre></div>
+
+<h3>Custom object types</h3>
+
+<p>Sometimes you may want to enact the same functionality on custom object types that store all their real data internally, say for an ODM type object. No fear, <code>mpath</code> has you covered. Simply pass the name of the property being used to store the internal data and it will be traversed instead:</p>
+
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">mpath</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'mpath'</span><span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">obj</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">comments</span><span class="o">:</span> <span class="p">[</span>
+      <span class="p">{</span> <span class="nx">title</span><span class="o">:</span> <span class="s1">'exciting!'</span><span class="p">,</span> <span class="nx">_doc</span><span class="o">:</span> <span class="p">{</span> <span class="nx">title</span><span class="o">:</span> <span class="s1">'great!'</span> <span class="p">}}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+
+<span class="nx">mpath</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'comments.0.title'</span><span class="p">,</span> <span class="nx">obj</span><span class="p">,</span> <span class="s1">'_doc'</span><span class="p">)</span>            <span class="c1">// 'great!'</span>
+<span class="nx">mpath</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">'comments.0.title'</span><span class="p">,</span> <span class="s1">'nov 3rd'</span><span class="p">,</span> <span class="nx">obj</span><span class="p">,</span> <span class="s1">'_doc'</span><span class="p">)</span>
+<span class="nx">mpath</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'comments.0.title'</span><span class="p">,</span> <span class="nx">obj</span><span class="p">,</span> <span class="s1">'_doc'</span><span class="p">)</span>            <span class="c1">// 'nov 3rd'</span>
+<span class="nx">mpath</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'comments.0.title'</span><span class="p">,</span> <span class="nx">obj</span><span class="p">)</span>                    <span class="c1">// 'exciting'</span>
+</pre></div>
+
+<p>When used with a <code>map</code>, the <code>map</code> argument comes last.</p>
+
+<div class="highlight"><pre><span class="nx">mpath</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">path</span><span class="p">,</span> <span class="nx">obj</span><span class="p">,</span> <span class="s1">'_doc'</span><span class="p">,</span> <span class="nx">map</span><span class="p">);</span>
+<span class="nx">mpath</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">path</span><span class="p">,</span> <span class="nx">val</span><span class="p">,</span> <span class="nx">obj</span><span class="p">,</span> <span class="s1">'_doc'</span><span class="p">,</span> <span class="nx">map</span><span class="p">);</span>
+</pre></div>
+
+<p><a href="https://github.com/aheckmann/mpath/blob/master/LICENSE">LICENSE</a></p>
+      </section>
+      <footer>
+        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+		
+  </body>
+</html>
