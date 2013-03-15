@@ -368,122 +368,211 @@ describe('mpath', function(){
     })
 
     describe('with `special`', function(){
-      it('works', function(done){
-        assert.equal('jiro', mpath.get('name', o, special));
+      describe('that is a string', function(){
+        it('works', function(done){
+          assert.equal('jiro', mpath.get('name', o, special));
 
-        assert.deepEqual(
-          { second: { third: [3,{ name: 'aaron' }, 9] }}
-          , mpath.get('first', o, special)
-        );
+          assert.deepEqual(
+            { second: { third: [3,{ name: 'aaron' }, 9] }}
+            , mpath.get('first', o, special)
+          );
 
-        assert.deepEqual(
-          { third: [3,{ name: 'aaron' }, 9] }
-          , mpath.get('first.second', o, special)
-        );
+          assert.deepEqual(
+            { third: [3,{ name: 'aaron' }, 9] }
+            , mpath.get('first.second', o, special)
+          );
 
-        assert.deepEqual(
-          [3,{ name: 'aaron' }, 9]
-          , mpath.get('first.second.third', o, special)
-        );
+          assert.deepEqual(
+            [3,{ name: 'aaron' }, 9]
+            , mpath.get('first.second.third', o, special)
+          );
 
-        assert.deepEqual(
-          3
-          , mpath.get('first.second.third.0', o, special)
-        );
+          assert.deepEqual(
+            3
+            , mpath.get('first.second.third.0', o, special)
+          );
 
-        assert.deepEqual(
-          4
-          , mpath.get('first.second.third.0', o, special, function (v) {
-            return 3 === v ? 4 : v;
-          })
-        );
+          assert.deepEqual(
+            4
+            , mpath.get('first.second.third.0', o, special, function (v) {
+              return 3 === v ? 4 : v;
+            })
+          );
 
-        assert.deepEqual(
-          9
-          , mpath.get('first.second.third.2', o, special)
-        );
+          assert.deepEqual(
+            9
+            , mpath.get('first.second.third.2', o, special)
+          );
 
-        assert.deepEqual(
-          { name: 'aaron' }
-          , mpath.get('first.second.third.1', o, special)
-        );
+          assert.deepEqual(
+            { name: 'aaron' }
+            , mpath.get('first.second.third.1', o, special)
+          );
 
-        assert.deepEqual(
-          'aaron'
-          , mpath.get('first.second.third.1.name', o, special)
-        );
+          assert.deepEqual(
+            'aaron'
+            , mpath.get('first.second.third.1.name', o, special)
+          );
 
-        assert.deepEqual([
-            { name: 'one' }
-          , { name: 'two', _doc: { name: '2' }}
-          , { name: 'three'
-            , comments: [{},{ comments: [{val: 'twoo'}]}]
-            , _doc: { name: '3', comments: [{},{ _doc: { comments: [{ val: 2 }] }}]}}],
-          mpath.get('comments', o, special));
+          assert.deepEqual([
+              { name: 'one' }
+            , { name: 'two', _doc: { name: '2' }}
+            , { name: 'three'
+              , comments: [{},{ comments: [{val: 'twoo'}]}]
+              , _doc: { name: '3', comments: [{},{ _doc: { comments: [{ val: 2 }] }}]}}],
+            mpath.get('comments', o, special));
 
-        assert.deepEqual({ name: 'one' }, mpath.get('comments.0', o, special));
-        assert.deepEqual('one', mpath.get('comments.0.name', o, special));
-        assert.deepEqual('2', mpath.get('comments.1.name', o, special));
-        assert.deepEqual('3', mpath.get('comments.2.name', o, special));
-        assert.deepEqual('nice', mpath.get('comments.2.name', o, special, function (v) {
-          return '3' === v ? 'nice' : v;
-        }));
+          assert.deepEqual({ name: 'one' }, mpath.get('comments.0', o, special));
+          assert.deepEqual('one', mpath.get('comments.0.name', o, special));
+          assert.deepEqual('2', mpath.get('comments.1.name', o, special));
+          assert.deepEqual('3', mpath.get('comments.2.name', o, special));
+          assert.deepEqual('nice', mpath.get('comments.2.name', o, special, function (v) {
+            return '3' === v ? 'nice' : v;
+          }));
 
-        assert.deepEqual([{},{ _doc: { comments: [{ val: 2 }] }}]
-            , mpath.get('comments.2.comments', o, special));
+          assert.deepEqual([{},{ _doc: { comments: [{ val: 2 }] }}]
+              , mpath.get('comments.2.comments', o, special));
 
-        assert.deepEqual({ _doc: { comments: [{val: 2}]}}
-            , mpath.get('comments.2.comments.1', o, special));
+          assert.deepEqual({ _doc: { comments: [{val: 2}]}}
+              , mpath.get('comments.2.comments.1', o, special));
 
-        assert.deepEqual(2, mpath.get('comments.2.comments.1.comments.0.val', o, special));
-        done();
+          assert.deepEqual(2, mpath.get('comments.2.comments.1.comments.0.val', o, special));
+          done();
+        })
+
+        it('handles array.property dot-notation', function(done){
+          assert.deepEqual(
+            ['one', '2', '3']
+            , mpath.get('comments.name', o, special)
+          );
+          assert.deepEqual(
+            ['one', 2, '3']
+            , mpath.get('comments.name', o, special, function (v) {
+              return '2' === v ? 2 : v
+            })
+          );
+          done();
+        })
+
+        it('handles array.array notation', function(done){
+          assert.deepEqual(
+              [undefined, undefined, [{}, {_doc: { comments:[{val:2}]}}]]
+            , mpath.get('comments.comments', o, special)
+          );
+          done();
+        })
+
+        it('handles array.array.index.array', function(done){
+          assert.deepEqual(
+              [undefined, undefined, [{val:2}]]
+            , mpath.get('comments.comments.1.comments', o, special)
+          );
+          done();
+        })
+
+        it('handles array.array.index.array.prop', function(done){
+          assert.deepEqual(
+              [undefined, undefined, [2]]
+            , mpath.get('comments.comments.1.comments.val', o, special)
+          );
+          assert.deepEqual(
+              ['nil', 'nil', [2]]
+            , mpath.get('comments.comments.1.comments.val', o, special, function (v) {
+              return undefined === v ? 'nil' : v;
+            })
+          );
+          done();
+        })
       })
 
-      it('handles array.property dot-notation', function(done){
-        assert.deepEqual(
-          ['one', '2', '3']
-          , mpath.get('comments.name', o, special)
-        );
-        assert.deepEqual(
-          ['one', 2, '3']
-          , mpath.get('comments.name', o, special, function (v) {
-            return '2' === v ? 2 : v
-          })
-        );
-        done();
-      })
+      describe('that is a function', function(){
+        var special = function (obj, key) {
+          return obj[key]
+        }
 
-      it('handles array.array notation', function(done){
-        assert.deepEqual(
-            [undefined, undefined, [{}, {_doc: { comments:[{val:2}]}}]]
-          , mpath.get('comments.comments', o, special)
-        );
-        done();
-      })
+        it('works', function(done){
+          assert.equal('jiro', mpath.get('name', o, special));
 
-      it('handles array.array.index.array', function(done){
-        assert.deepEqual(
-            [undefined, undefined, [{val:2}]]
-          , mpath.get('comments.comments.1.comments', o, special)
-        );
-        done();
-      })
+          assert.deepEqual(
+            { second: { third: [3,{ name: 'aaron' }, 9] }}
+            , mpath.get('first', o, special)
+          );
 
-      it('handles array.array.index.array.prop', function(done){
-        assert.deepEqual(
-            [undefined, undefined, [2]]
-          , mpath.get('comments.comments.1.comments.val', o, special)
-        );
-        assert.deepEqual(
-            ['nil', 'nil', [2]]
-          , mpath.get('comments.comments.1.comments.val', o, special, function (v) {
-            return undefined === v ? 'nil' : v;
-          })
-        );
-        done();
+          assert.deepEqual(
+            { third: [3,{ name: 'aaron' }, 9] }
+            , mpath.get('first.second', o, special)
+          );
+
+          assert.deepEqual(
+            [3,{ name: 'aaron' }, 9]
+            , mpath.get('first.second.third', o, special)
+          );
+
+          assert.deepEqual(
+            3
+            , mpath.get('first.second.third.0', o, special)
+          );
+
+          assert.deepEqual(
+            4
+            , mpath.get('first.second.third.0', o, special, function (v) {
+              return 3 === v ? 4 : v;
+            })
+          );
+
+          assert.deepEqual(
+            9
+            , mpath.get('first.second.third.2', o, special)
+          );
+
+          assert.deepEqual(
+            { name: 'aaron' }
+            , mpath.get('first.second.third.1', o, special)
+          );
+
+          assert.deepEqual(
+            'aaron'
+            , mpath.get('first.second.third.1.name', o, special)
+          );
+
+          assert.deepEqual([
+              { name: 'one' }
+            , { name: 'two', _doc: { name: '2' }}
+            , { name: 'three'
+              , comments: [{},{ comments: [{val: 'twoo'}]}]
+              , _doc: { name: '3', comments: [{},{ _doc: { comments: [{ val: 2 }] }}]}}],
+            mpath.get('comments', o, special));
+
+          assert.deepEqual({ name: 'one' }, mpath.get('comments.0', o, special));
+          assert.deepEqual('one', mpath.get('comments.0.name', o, special));
+          assert.deepEqual('two', mpath.get('comments.1.name', o, special));
+          assert.deepEqual('three', mpath.get('comments.2.name', o, special));
+          assert.deepEqual('nice', mpath.get('comments.2.name', o, special, function (v) {
+            return 'three' === v ? 'nice' : v;
+          }));
+
+          assert.deepEqual([{},{ comments: [{ val: 'twoo' }] }]
+              , mpath.get('comments.2.comments', o, special));
+
+          assert.deepEqual({ comments: [{val: 'twoo'}]}
+              , mpath.get('comments.2.comments.1', o, special));
+
+          assert.deepEqual('twoo', mpath.get('comments.2.comments.1.comments.0.val', o, special));
+
+          var overide = false;
+          assert.deepEqual('twoo', mpath.get('comments.8.comments.1.comments.0.val', o, function (obj, path) {
+            if (Array.isArray(obj) && 8 == path) {
+              overide = true;
+              return obj[2];
+            }
+            return obj[path];
+          }));
+          assert.ok(overide);
+
+          done();
+        })
       })
     })
-
   })
 
   describe('set', function(){
