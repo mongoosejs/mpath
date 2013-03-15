@@ -16,6 +16,7 @@
   "author": "Aaron Heckmann <aaron.heckmann+github@gmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "mocha": "1.6.0"
+    "mocha": "1.6.0",
+    "benchmark": "~1.0.0"
   }
 }
