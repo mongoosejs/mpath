@@ -571,6 +571,22 @@ describe('mpath', function(){
 
           done();
         })
+
+        it('in combination with map', function(done){
+          var special = function (obj, key) {
+            if (Array.isArray(obj)) return obj[key];
+            return obj.mpath;
+          }
+          var map = function (val) {
+            return 'convert' == val
+              ? 'mpath'
+              : val;
+          }
+          var o = { mpath: [{ mpath: 'converse' }, { mpath: 'convert' }] }
+
+          assert.equal('mpath', mpath.get('something.1.kewl', o, special, map));
+          done();
+        })
       })
     })
   })
