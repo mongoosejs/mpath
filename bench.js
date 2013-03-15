@@ -65,6 +65,32 @@ var sha = require('child_process').exec("git log --pretty=format:'%h' -n 1", fun
   s.add('mpath.get("comments.name", obj)', function () {
     mpath.get('comments.name', o);
   })
+
+  s.add('mpath.set("first", obj, val)', function () {
+    mpath.set('first', o, 1);
+  })
+  s.add('mpath.set("first.second", obj, val)', function () {
+    mpath.set('first.second', o, 1);
+  })
+  s.add('mpath.set("first.second.third.1.name", obj, val)', function () {
+    mpath.set('first.second.third.1.name', o, 1);
+  })
+  s.add('mpath.set("comments", obj, val)', function () {
+    mpath.set('comments', o, 1);
+  })
+  s.add('mpath.set("comments.1", obj, val)', function () {
+    mpath.set('comments.1', o, 1);
+  })
+  s.add('mpath.set("comments.2.name", obj, val)', function () {
+    mpath.set('comments.2.name', o, 1);
+  })
+  s.add('mpath.set("comments.2.comments.1.comments.0.val", obj, val)', function () {
+    mpath.set('comments.2.comments.1.comments.0.val', o, 1);
+  })
+  s.add('mpath.set("comments.name", obj, val)', function () {
+    mpath.set('comments.name', o, 1);
+  })
+
   s.on('start', function () {
     console.log('starting...');
     out.write('*' + sha + ': ' + String(new Date()) + '\n');
