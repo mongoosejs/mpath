@@ -1658,6 +1658,44 @@ describe('mpath', function(){
         })
       })
 
+      describe('that is a function', function(){
+        it('works without map', function(done){
+          var o = { hello: { world: [{ how: 'are' }, { you: '?' }] }};
+          var special = function (obj, key, val) {
+            if (val) {
+              obj[key] = val;
+            } else {
+              return 'thing' == key
+                ? obj.world
+                : obj[key]
+            }
+          }
+          mpath.set('hello.thing.how', 'arrrr', o, special);
+          assert.deepEqual(o, { hello: { world: [{ how: 'arrrr' }, { you: '?', how: 'arrrr' }] }});
+          done();
+        })
+        it('works with map', function(done){
+          var o = { hello: { world: [{ how: 'are' }, { you: '?' }] }};
+          var special = function (obj, key, val) {
+            if (val) {
+              obj[key] = val;
+            } else {
+              return 'thing' == key
+                ? obj.world
+                : obj[key]
+            }
+          }
+          var map = function (val) {
+            return 'convert' == val
+              ? 'ºº'
+              : val
+          }
+          mpath.set('hello.thing.how', 'convert', o, special, map);
+          assert.deepEqual(o, { hello: { world: [{ how: 'ºº' }, { you: '?', how: 'ºº' }] }});
+          done();
+        })
+      })
+
     })
 
     describe('get/set integration', function(){
