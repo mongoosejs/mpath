@@ -1659,20 +1659,37 @@ describe('mpath', function(){
       })
 
       describe('that is a function', function(){
-        it('works without map', function(done){
-          var o = { hello: { world: [{ how: 'are' }, { you: '?' }] }};
-          var special = function (obj, key, val) {
-            if (val) {
-              obj[key] = val;
-            } else {
-              return 'thing' == key
-                ? obj.world
-                : obj[key]
+        describe('without map', function(){
+          it('works on array value', function(done){
+            var o = { hello: { world: [{ how: 'are' }, { you: '?' }] }};
+            var special = function (obj, key, val) {
+              if (val) {
+                obj[key] = val;
+              } else {
+                return 'thing' == key
+                  ? obj.world
+                  : obj[key]
+              }
             }
-          }
-          mpath.set('hello.thing.how', 'arrrr', o, special);
-          assert.deepEqual(o, { hello: { world: [{ how: 'arrrr' }, { you: '?', how: 'arrrr' }] }});
-          done();
+            mpath.set('hello.thing.how', 'arrrr', o, special);
+            assert.deepEqual(o, { hello: { world: [{ how: 'arrrr' }, { you: '?', how: 'arrrr' }] }});
+            done();
+          })
+          it('works on non-array value', function(done){
+            var o = { hello: { world: { how: 'are you' }}};
+            var special = function (obj, key, val) {
+              if (val) {
+                obj[key] = val;
+              } else {
+                return 'thing' == key
+                  ? obj.world
+                  : obj[key]
+              }
+            }
+            mpath.set('hello.thing.how', 'RU', o, special);
+            assert.deepEqual(o, { hello: { world: { how: 'RU' }}});
+            done();
+          })
         })
         it('works with map', function(done){
           var o = { hello: { world: [{ how: 'are' }, { you: '?' }] }};
