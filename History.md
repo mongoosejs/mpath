@@ -1,4 +1,10 @@
 
+0.2.1 / 2013-03-22
+==================
+
+  * test; added for #5
+  * fix typo that breaks set #5 [Contra](https://github.com/Contra)
+
 0.2.0 / 2013-03-15
 ==================
 
