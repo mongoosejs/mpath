@@ -53,7 +53,11 @@ describe('mpath', function(){
     o.arr = [
         { arr: [{ a: { b: 47 }}, { a: { c: 48 }}, { d: 'yep' }] }
       , { yep: true }
-    ]
+    ];
+    o.dollar = [
+      { yep: true },
+      'yep'
+    ];
     return o;
   }
 
@@ -592,6 +596,51 @@ describe('mpath', function(){
   })
 
   describe('set', function(){
+    describe('array.$', function(){
+      var o = doc();
+
+      it('add new elements in exist array', function(done){
+        mpath.set('dollar.$', [15], o);
+        mpath.set('dollar.$', [15], o, function (v) {
+          return v.length === 1 ? [] : v;
+        });
+        mpath.set('dollar.$', '15', o);
+        mpath.set('dollar.$', false, o);
+        mpath.set('dollar.$', 15, o);
+
+        assert.deepEqual([
+          { yep: true },
+          'yep',
+          [15],
+          [],
+          '15',
+          false,
+          15
+        ], o.dollar);
+
+        done();
+      });
+      it('add new elements in not exist array', function(done){
+        mpath.set('not_exist_dollar.$', [15], o);
+        mpath.set('not_exist_dollar.$', [15], o, function (v) {
+          return v.length === 1 ? [] : v;
+        });
+        mpath.set('not_exist_dollar.$', '15', o);
+        mpath.set('not_exist_dollar.$', false, o);
+        mpath.set('not_exist_dollar.$', 15, o);
+
+        assert.deepEqual([
+          [15],
+          [],
+          '15',
+          false,
+          15
+        ], o.not_exist_dollar);
+
+        done();
+      })
+    });
+
     describe('without `special`', function(){
       var o = doc();
 
@@ -631,7 +680,7 @@ describe('mpath', function(){
           , o.comments[2].comments[1].comments[2]);
 
         done();
-      })
+      });
 
       describe('array.path', function(){
         describe('with single non-array value', function(){
