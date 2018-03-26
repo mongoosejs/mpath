@@ -1792,6 +1792,17 @@ describe('mpath', function(){
       done();
     });
 
+    it('underneath a map', function(done) {
+      assert.equal(mpath.get('a.b', { a: new Map([['b', 1]]) }), 1);
+
+      var m = new Map([['b', 1]]);
+      var obj = { a: m };
+      mpath.set('a.c', 2, obj);
+      assert.equal(m.get('c'), 2);
+
+      done();
+    });
+
     it('unset', function(done) {
       var o = { a: 1 };
       mpath.unset('a', o);
