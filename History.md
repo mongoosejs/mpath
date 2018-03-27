@@ -1,3 +1,8 @@
+0.4.0 / 2018-03-27
+==================
+ * feat: add support for ES6 maps
+ * BREAKING CHANGE: drop support for Node < 4
+
 0.3.0 / 2017-06-05
 ==================
  * feat: add has() and unset() functions
