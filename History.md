@@ -1,3 +1,7 @@
+0.4.1 / 2018-04-08
+==================
+ * fix: allow opting out of weird `$` set behavior re: Automattic/mongoose#6273
+
 0.4.0 / 2018-03-27
 ==================
  * feat: add support for ES6 maps
