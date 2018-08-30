@@ -1,3 +1,7 @@
+0.5.1 / 2018-08-30
+==================
+ * fix: prevent writing to constructor and prototype as well as __proto__
+
 0.5.0 / 2018-08-30
 ==================
  * BREAKING CHANGE: disallow setting/unsetting __proto__ properties
