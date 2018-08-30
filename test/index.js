@@ -591,12 +591,18 @@ describe('mpath', function(){
     })
   })
 
-  describe('set', function(){
-    describe('without `special`', function(){
+  describe('set', function() {
+    it('prevents writing to __proto__', function() {
+      var obj = {};
+      mpath.set('__proto__.x', 'foobar', obj);
+      assert.ok(!({}.x));
+    });
+
+    describe('without `special`', function() {
       var o = doc();
 
-      it('works', function(done){
-        mpath.set('name', 'a new val', o, function (v) {
+      it('works', function(done) {
+        mpath.set('name', 'a new val', o, function(v) {
           return 'a new val' === v ? 'changed' : v;
         });
         assert.deepEqual('changed', o.name);
@@ -1823,13 +1829,23 @@ describe('mpath', function(){
       done();
     });
 
+    it('unset with __proto__', function(done) {
+      // Should refuse to set __proto__
+      function Clazz() {}
+      Clazz.prototype.foobar = true;
+
+      mpath.unset('__proto__.foobar', new Clazz());
+      assert.ok(Clazz.prototype.foobar);
+
+      done();
+    });
+
     it('ignores setting a nested path that doesnt exist', function(done){
       var o = doc();
       assert.doesNotThrow(function(){
         mpath.set('thing.that.is.new', 10, o);
       })
       done();
-    })
-  })
-
-})
+    });
+  });
+});
