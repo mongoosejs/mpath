@@ -1793,6 +1793,9 @@ describe('mpath', function(){
     });
 
     it('underneath a map', function(done) {
+      if (!global.Map) {
+        return this.skip();
+      }
       assert.equal(mpath.get('a.b', { a: new Map([['b', 1]]) }), 1);
 
       var m = new Map([['b', 1]]);
