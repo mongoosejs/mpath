@@ -596,6 +596,9 @@ describe('mpath', function(){
       var obj = {};
       mpath.set('__proto__.x', 'foobar', obj);
       assert.ok(!({}.x));
+
+      mpath.set('constructor.prototype.x', 'foobar', obj);
+      assert.ok(!({}.x));
     });
 
     describe('without `special`', function() {
@@ -1835,6 +1838,9 @@ describe('mpath', function(){
       Clazz.prototype.foobar = true;
 
       mpath.unset('__proto__.foobar', new Clazz());
+      assert.ok(Clazz.prototype.foobar);
+
+      mpath.unset('constructor.prototype.foobar', new Clazz());
       assert.ok(Clazz.prototype.foobar);
 
       done();
