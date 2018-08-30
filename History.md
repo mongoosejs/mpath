@@ -1,3 +1,8 @@
+0.5.0 / 2018-08-30
+==================
+ * BREAKING CHANGE: disallow setting/unsetting __proto__ properties
+ * feat: re-add support for Node < 4 for this release
+
 0.4.1 / 2018-04-08
 ==================
  * fix: allow opting out of weird `$` set behavior re: Automattic/mongoose#6273
