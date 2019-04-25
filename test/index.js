@@ -1846,6 +1846,21 @@ describe('mpath', function(){
       done();
     });
 
+    it('get() underneath subclassed array', function(done) {
+      class MyArray extends Array {}
+
+      const obj = {
+        arr: new MyArray()
+      };
+      obj.arr.push({ test: 2 });
+
+      const arr = mpath.get('arr.test', obj);
+      assert.equal(arr.constructor.name, 'Array');
+      assert.ok(!(arr instanceof MyArray));
+
+      done();
+    });
+
     it('ignores setting a nested path that doesnt exist', function(done){
       var o = doc();
       assert.doesNotThrow(function(){
