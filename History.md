@@ -1,3 +1,7 @@
+0.5.2 / 2019-04-25
+==================
+ * fix: avoid using subclassed array constructor when doing `map()`
+
 0.5.1 / 2018-08-30
 ==================
  * fix: prevent writing to constructor and prototype as well as __proto__
