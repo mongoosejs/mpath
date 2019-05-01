@@ -1,3 +1,7 @@
+0.6.0 / 2019-05-01
+==================
+ * feat: support setting dotted paths within nested arrays
+
 0.5.2 / 2019-04-25
 ==================
  * fix: avoid using subclassed array constructor when doing `map()`
