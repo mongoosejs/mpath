@@ -1750,7 +1750,7 @@ describe('mpath', function(){
         ];
         assert.deepEqual(t, o.array);
         done();
-      })
+      });
 
       it('array.prop', function(done){
         mpath.set('comments.name', ['this', 'was', 'changed'], o);
@@ -1774,9 +1774,15 @@ describe('mpath', function(){
         ], o.comments);
 
         done();
-      })
+      });
 
-    })
+      it('nested array', function(done) {
+        const obj = { arr: [[{ test: 41 }]] };
+        mpath.set('arr.test', [[42]], obj);
+        assert.deepEqual(obj.arr, [[{ test: 42 }]]);
+        done();
+      });
+    });
 
     describe('multiple $ use', function(){
       var o = doc();
@@ -1785,8 +1791,8 @@ describe('mpath', function(){
           mpath.set('arr.$.arr.$.a', 35, o);
         });
         done();
-      })
-    })
+      });
+    });
 
     it('has', function(done) {
       assert.ok(mpath.has('a', { a: 1 }));
