@@ -1,3 +1,7 @@
+0.8.0 / 2020-11-14
+==================
+ * feat: support square bracket indexing for `get()`, `set()`, `has()`, and `unset()`
+
 0.7.0 / 2020-03-24
 ==================
  * BREAKING CHANGE: remove `component.json` #9 [AlexeyGrigorievBoost](https://github.com/AlexeyGrigorievBoost)
