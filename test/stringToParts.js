@@ -17,4 +17,12 @@ describe('stringToParts', function() {
   it('throws for invalid numbers in square brackets', function() {
     assert.throws(() => stringToParts('foo[1mystring]'), /1mystring/);
   });
+
+  it('handles empty string', function() {
+    assert.deepEqual(stringToParts(''), ['']);
+  });
+
+  it('handles trailing dot', function() {
+    assert.deepEqual(stringToParts('a.b.'), ['a', 'b', '']);
+  });
 });
