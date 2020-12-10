@@ -1,3 +1,7 @@
+0.8.1 / 2020-12-10
+==================
+ * fix(stringToParts): handle empty string and trailing dot the same way that `split()` does for backwards compat
+
 0.8.0 / 2020-11-14
 ==================
  * feat: support square bracket indexing for `get()`, `set()`, `has()`, and `unset()`
