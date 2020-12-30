@@ -1,3 +1,8 @@
+0.8.2 / 2020-12-30
+==================
+ * fix(stringToParts): fall back to legacy treatment for square brackets if square brackets contents aren't a number Automattic/mongoose#9640
+ * chore: add eslint
+
 0.8.1 / 2020-12-10
 ==================
  * fix(stringToParts): handle empty string and trailing dot the same way that `split()` does for backwards compat
