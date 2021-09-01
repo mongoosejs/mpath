@@ -1,3 +1,7 @@
+0.8.4 / 2021-09-01
+==================
+ * fix: throw error if `parts` contains an element that isn't a string or number #13
+
 0.8.3 / 2020-12-30
 ==================
  * fix: use var instead of let/const for Node.js 4.x support
