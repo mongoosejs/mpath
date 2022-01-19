@@ -595,7 +595,7 @@ describe('mpath', function() {
   describe('set', function() {
 
     it('set `path` must be a string or array', function(done) {
-      let o = { a: 1 };
+      const o = { a: 1 };
       assert.throws(function() {
         mpath.set({}, o, 666);
       }, /Must be either string or array/);
@@ -1845,6 +1845,41 @@ describe('mpath', function() {
       done();
     });
 
+    it('has `path` must be a string or array', function(done) {
+      const o = { a: 1 };
+      assert.throws(function() {
+        mpath.has({}, o);
+      }, /Must be either string or array/);
+      assert.throws(function() {
+        mpath.has(4, o);
+      }, /Must be either string or array/);
+      assert.throws(function() {
+        mpath.has(function() {}, o);
+      }, /Must be either string or array/);
+      assert.throws(function() {
+        mpath.has(/asdf/, o);
+      }, /Must be either string or array/);
+      assert.throws(function() {
+        mpath.has(Math, o);
+      }, /Must be either string or array/);
+      assert.throws(function() {
+        mpath.has(Buffer, o);
+      }, /Must be either string or array/);
+      assert.throws(function() {
+        mpath.has([Buffer], o);
+      }, /must be a string or number/);
+      assert.doesNotThrow(function() {
+        mpath.has('string', o);
+      });
+      assert.doesNotThrow(function() {
+        mpath.has([], o);
+      });
+      assert.doesNotThrow(function() {
+        mpath.has([1], o);
+      });
+      done();
+    });
+
     it('underneath a map', function(done) {
       if (!global.Map) {
         done();
@@ -1879,7 +1914,7 @@ describe('mpath', function() {
     });
 
     it('unset `path` must be a string or array', function(done) {
-      let o = { a: 1 };
+      const o = { a: 1 };
       assert.throws(function() {
         mpath.unset({}, o);
       }, /Must be either string or array/);
