@@ -20,9 +20,9 @@
   "author": "Aaron Heckmann <aaron.heckmann+github@gmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "mocha": "5.x",
-    "benchmark": "~1.0.0",
-    "eslint": "7.16.0"
+    "mocha": "9.1.4",
+    "benchmark": "2.1.4",
+    "eslint": "8.7.0"
   },
   "eslintConfig": {
     "extends": [
