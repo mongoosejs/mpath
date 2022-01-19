@@ -1804,6 +1804,7 @@ describe('mpath', function() {
       assert.ok(mpath.has('a.b', { a: { b: undefined } }));
       assert.ok(!mpath.has('a.b', { a: 1 }));
       assert.ok(!mpath.has('a.b', { a: null }));
+      assert.ok(mpath.has(['a', 'b'], { a: { b: 1 } }));
 
       done();
     });
