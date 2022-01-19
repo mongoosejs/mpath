@@ -83,7 +83,7 @@ var path = 'one.two.14'; // path
 - 1) when value of the segment parent is not an array, return the value of `parent.segment`
 - 2) when value of the segment parent is an array
   - a) if the segment is an integer, replace the parent array with the value at `parent[segment]`
-  - b) if not an integer, keep the array but replace each array `item` with the value returned from calling `get(remainingSegments, item)` or undefined if falsey.
+  - b) if not an integer, keep the array but replace each array `item` with the value returned from calling `get(remainingSegments, item)` or undefined if falsy.
 
 #####Maps
 
@@ -231,7 +231,7 @@ console.log(obj); // prints..
 
 ####Field assignment rules
 
-The rules utilized mirror those used on `mpath.get`, meaning we can take values returned from `mpath.get`, update them, and reassign them using `mpath.set`. Note that setting nested arrays of arrays can get unweildy quickly. Check out the [tests](https://github.com/aheckmann/mpath/blob/master/test/index.js) for more extreme examples.
+The rules utilized mirror those used on `mpath.get`, meaning we can take values returned from `mpath.get`, update them, and reassign them using `mpath.set`. Note that setting nested arrays of arrays can get unwieldy quickly. Check out the [tests](https://github.com/aheckmann/mpath/blob/master/test/index.js) for more extreme examples.
 
 #####Maps
 

@@ -11,7 +11,15 @@
   "engines": {
     "node": ">=12.0.0"
   },
+  "contributors": [
+    {
+      "name": "Aras Abbasi",
+      "email": "aras.abbasi@gmail.com",
+      "url": "https://github.com/uzlopak"
+    }
+  ],
   "repository": "git://github.com/aheckmann/mpath.git",
+  "homepage": "https://github.com/aheckman/mpath",
   "keywords": [
     "mongodb",
     "path",
@@ -20,6 +28,14 @@
   ],
   "author": "Aaron Heckmann <aaron.heckmann+github@gmail.com>",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/aheckman/mpath/issues"
+  },
+  "files": [
+    "index.js",
+    "lib",
+    "*.md"
+  ],
   "devDependencies": {
     "benchmark": "2.1.4",
     "eslint": "8.7.0",
