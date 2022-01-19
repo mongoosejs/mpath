@@ -27,6 +27,15 @@ const s = new Bench.Suite("stringToParts")
   })
   .add('stringToParts("comments.name")', function () {
     stringToParts('comments.name');
+  })
+  .add('stringToParts("foo[1mystring]")', function () {
+    stringToParts('foo[1mystring]');
+  })
+  .add('stringToParts("foo[1mystring].bar[1]")', function () {
+    stringToParts('foo[1mystring].bar[1]');
+  })
+  .add('stringToParts("foo[1mystring][2]")', function () {
+    stringToParts('foo[1mystring][2]');
   });
 
 s.on('start', function () {
