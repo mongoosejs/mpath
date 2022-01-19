@@ -40,28 +40,28 @@ const s = new Bench.Suite;
 let o = doc();
 s
   .add('mpath.set("first", obj, val)', function() {
-    mpath.set('first', o, 1);
+    mpath.set('first', 1, o);
   })
   .add('mpath.set("first.second", obj, val)', function() {
-    mpath.set('first.second', o, 1);
+    mpath.set('first.second', 1, o);
   })
   .add('mpath.set("first.second.third.1.name", obj, val)', function() {
-    mpath.set('first.second.third.1.name', o, 1);
+    mpath.set('first.second.third.1.name', 1, o);
   })
   .add('mpath.set("comments", obj, val)', function() {
-    mpath.set('comments', o, 1);
+    mpath.set('comments', 1, o);
   })
   .add('mpath.set("comments.1", obj, val)', function() {
-    mpath.set('comments.1', o, 1);
+    mpath.set('comments.1', 1, o);
   })
   .add('mpath.set("comments.2.name", obj, val)', function() {
-    mpath.set('comments.2.name', o, 1);
+    mpath.set('comments.2.name', 1, o);
   })
   .add('mpath.set("comments.2.comments.1.comments.0.val", obj, val)', function() {
-    mpath.set('comments.2.comments.1.comments.0.val', o, 1);
+    mpath.set('comments.2.comments.1.comments.0.val', 1, o);
   })
   .add('mpath.set("comments.name", obj, val)', function() {
-    mpath.set('comments.name', o, 1);
+    mpath.set('comments.name', 1, o);
   });
 
 s.on('start', function() {
