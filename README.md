@@ -2,6 +2,15 @@
 
 {G,S}et javascript object values using MongoDB-like path notation.
 
+<div align="center">
+
+[![Known Vulnerabilities](https://snyk.io/test/github/aheckmann/mpath/badge.svg)](https://snyk.io/test/github/aheckmann/mpath)
+[![Security Responsible Disclosure](https://img.shields.io/badge/Security-Responsible%20Disclosure-yellow.svg)](https://github.com/nodejs/security-wg/blob/HEAD/processes/responsible_disclosure_template.md)
+[![NPM version](https://img.shields.io/npm/v/mpath.svg?style=flat)](https://www.npmjs.com/package/mpath)
+[![NPM downloads](https://img.shields.io/npm/dm/mpath.svg?style=flat)](https://www.npmjs.com/package/mpath)
+
+</div>
+
 ###Getting
 
 ```js
