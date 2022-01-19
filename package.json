@@ -4,6 +4,7 @@
   "description": "{G,S}et object values using MongoDB-like path notation",
   "main": "index.js",
   "scripts": {
+    "coverage": "nyc mocha test/*",
     "lint": "eslint .",
     "test": "mocha test/*"
   },
@@ -20,9 +21,10 @@
   "author": "Aaron Heckmann <aaron.heckmann+github@gmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "mocha": "9.1.4",
     "benchmark": "2.1.4",
-    "eslint": "8.7.0"
+    "eslint": "8.7.0",
+    "mocha": "9.1.4",
+    "nyc": "^15.1.0"
   },
   "eslintConfig": {
     "extends": [
