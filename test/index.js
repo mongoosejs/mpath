@@ -594,8 +594,7 @@ describe('mpath', function() {
 
   describe('set', function() {
 
-
-    it('unset `path` must be a string or array', function(done) {
+    it('set `path` must be a string or array', function(done) {
       let o = { a: 1 };
       assert.throws(function() {
         mpath.set({}, o, 666);
@@ -615,15 +614,21 @@ describe('mpath', function() {
       assert.throws(function() {
         mpath.set(Buffer, o, 666);
       }, /Must be either string or array/);
+      assert.throws(function() {
+        mpath.set([Buffer], o, 666);
+      }, /must be a string or number/);
       assert.doesNotThrow(function() {
         mpath.set('string', o, 666);
       });
       assert.doesNotThrow(function() {
         mpath.set([], o, 666);
       });
+      assert.doesNotThrow(function() {
+        mpath.set([1], o, 666);
+      });
       done();
     });
-    
+
     it('prevents writing to __proto__', function() {
       const obj = {};
       mpath.set('__proto__.x', 'foobar', obj);
@@ -1893,11 +1898,17 @@ describe('mpath', function() {
       assert.throws(function() {
         mpath.unset(Buffer, o);
       }, /Must be either string or array/);
+      assert.throws(function() {
+        mpath.unset([Buffer], o);
+      }, /must be a string or number/);
       assert.doesNotThrow(function() {
         mpath.unset('string', o);
       });
       assert.doesNotThrow(function() {
         mpath.unset([], o);
+      });
+      assert.doesNotThrow(function() {
+        mpath.unset([1], o);
       });
       done();
     });
