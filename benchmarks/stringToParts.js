@@ -3,7 +3,7 @@
 const stringToParts = require('../lib/stringToParts.js');
 const Bench = require('benchmark');
 
-const s = new Bench.Suite('stringToParts')
+new Bench.Suite('stringToParts')
   .add('stringToParts("first")', function() {
     stringToParts('first');
   })
@@ -36,15 +36,9 @@ const s = new Bench.Suite('stringToParts')
   })
   .add('stringToParts("foo[1mystring][2]")', function() {
     stringToParts('foo[1mystring][2]');
-  });
-
-s.on('start', function() {
-  console.log('starting...');
-})
+  })
   .on('cycle', function(e) {
     const s = String(e.target);
     console.log(s);
-  })
-  .on('complete', function() {
   })
   .run();
