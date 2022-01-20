@@ -597,34 +597,34 @@ describe('mpath', function() {
     it('set `path` must be a string or array', function(done) {
       const o = { a: 1 };
       assert.throws(function() {
-        mpath.set({}, o, 666);
+        mpath.set({}, 666, o);
       }, /Must be either string or array/);
       assert.throws(function() {
-        mpath.set(4, o, 666);
+        mpath.set(4, 666, o);
       }, /Must be either string or array/);
       assert.throws(function() {
-        mpath.set(function() {}, o, 666);
+        mpath.set(function() {}, 666, o);
       }, /Must be either string or array/);
       assert.throws(function() {
-        mpath.set(/asdf/, o, 666);
+        mpath.set(/asdf/, 666, o);
       }, /Must be either string or array/);
       assert.throws(function() {
-        mpath.set(Math, o, 666);
+        mpath.set(Math, 666, o);
       }, /Must be either string or array/);
       assert.throws(function() {
-        mpath.set(Buffer, o, 666);
+        mpath.set(Buffer, 666, o);
       }, /Must be either string or array/);
       assert.throws(function() {
-        mpath.set([Buffer], o, 666);
+        mpath.set([Buffer], 666, o);
       }, /must be a string or number/);
       assert.doesNotThrow(function() {
-        mpath.set('string', o, 666);
+        mpath.set('string', 666, o);
       });
       assert.doesNotThrow(function() {
-        mpath.set([], o, 666);
+        mpath.set([], 666, o);
       });
       assert.doesNotThrow(function() {
-        mpath.set([1], o, 666);
+        mpath.set([1], 666, o);
       });
       done();
     });
