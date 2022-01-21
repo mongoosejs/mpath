@@ -6,6 +6,7 @@
   "scripts": {
     "bench": "node ./benchmarks/bench.js",
     "bench:cached": "node ./benchmarks/bench-with-cache.js",
+    "bench:lru": "node ./benchmarks/bench-with-cache.js",
     "coverage": "nyc mocha test/*",
     "lint": "eslint .",
     "test": "mocha test/*"
@@ -41,6 +42,7 @@
   "devDependencies": {
     "benchmark": "2.1.4",
     "eslint": "8.7.0",
+    "lru-cache": "^6.0.0",
     "mocha": "5.x",
     "nyc": "^15.1.0"
   },
