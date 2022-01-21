@@ -1,9 +1,9 @@
 'use strict';
-const setTokenizerCache = require('../lib/tokenizer.js').setTokenizerCache;
+const settokenizeCache = require('../lib/tokenize.js').settokenizeCache;
 const lru = require('lru-cache');
 
-setTokenizerCache(new lru());
-require('./tokenizer');
+settokenizeCache(new lru());
+require('./tokenize');
 require('./get');
 require('./has');
 require('./set');

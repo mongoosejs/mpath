@@ -1,5 +1,5 @@
 'use strict';
-require('./tokenizer');
+require('./tokenize');
 require('./get');
 require('./has');
 require('./set');
