@@ -6,7 +6,7 @@
   "scripts": {
     "bench": "node ./benchmarks/bench.js",
     "bench:cached": "node ./benchmarks/bench-with-cache.js",
-    "bench:lru": "node ./benchmarks/bench-with-cache.js",
+    "bench:lru": "node ./benchmarks/bench-with-lru.js",
     "coverage": "nyc mocha test/*",
     "lint": "eslint .",
     "test": "mocha test/*"
