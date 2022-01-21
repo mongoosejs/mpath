@@ -1,6 +1,3 @@
-0.9.0 / TBA
- * perf: Improve overall performance
-
 0.8.4 / 2021-09-01
 ==================
  * fix: throw error if `parts` contains an element that isn't a string or number #13
