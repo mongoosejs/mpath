@@ -1,3 +1,4 @@
+'use strict';
 require('./stringToParts');
 require('./get');
 require('./has');

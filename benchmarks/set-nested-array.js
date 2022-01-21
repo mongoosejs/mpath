@@ -11,7 +11,7 @@ function doc() {
 }
 const o = doc();
 
-const s = new Bench.Suite()
+new Bench.Suite()
   .add('mpath.set("arr.test", [[42]], obj))', function() {
     mpath.set('arr.test', [[42]], o);
   })
