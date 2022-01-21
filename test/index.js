@@ -4,17 +4,10 @@
  * Test dependencies.
  */
 
+const setTokenizeCache = require('../lib/tokenize.js').setTokenizeCache;
+setTokenizeCache(undefined);
 const mpath = require('../');
 const assert = require('assert');
-
-/**
- * logging helper
- */
-
-function log(o) {
-  console.log();
-  console.log(require('util').inspect(o, false, 1000));
-}
 
 /**
  * special path for override tests

@@ -164,5 +164,8 @@
       ],
       "no-prototype-builtins": "off"
     }
+  },
+  "dependencies": {
+    "mnemonist": "^0.39.0"
   }
 }

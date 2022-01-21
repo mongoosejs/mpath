@@ -1,6 +1,8 @@
 'use strict';
 
 const assert = require('assert');
+const setTokenizeCache = require('../lib/tokenize.js').setTokenizeCache;
+setTokenizeCache(undefined);
 const tokenize = require('../lib/tokenize').tokenize;
 
 describe('tokenize', function() {
