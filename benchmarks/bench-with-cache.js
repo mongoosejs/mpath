@@ -1,8 +1,8 @@
 'use strict';
-const setTokenizerCache = require('../lib/stringToParts.js').setTokenizerCache;
+const setTokenizerCache = require('../lib/tokenizer.js').setTokenizerCache;
 
 setTokenizerCache(new Map());
-require('./stringToParts');
+require('./tokenizer');
 require('./get');
 require('./has');
 require('./set');
