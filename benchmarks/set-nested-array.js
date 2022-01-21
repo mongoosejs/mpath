@@ -12,10 +12,10 @@ function doc() {
 const o = doc();
 
 const s = new Bench.Suite()
-  .add('mpath.set("arr.test", [[42]], obj))', function () {
+  .add('mpath.set("arr.test", [[42]], obj))', function() {
     mpath.set('arr.test', [[42]], o);
   })
-  .on('cycle', function (e) {
+  .on('cycle', function(e) {
     const s = String(e.target);
     console.log(s);
   })

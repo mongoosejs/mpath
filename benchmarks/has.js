@@ -2,7 +2,7 @@
 
 const mpath = require('../');
 const Bench = require('benchmark');
-const doc = require("./doc").doc;
+const doc = require('./doc').doc;
 
 const o = doc();
 
