@@ -1,6 +1,6 @@
 'use strict';
 const setTokenizerCache = require('../lib/stringToParts.js').setTokenizerCache;
-const lru = require('lru-cache')
+const lru = require('lru-cache');
 
 setTokenizerCache(new lru());
 require('./stringToParts');
