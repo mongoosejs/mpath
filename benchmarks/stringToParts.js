@@ -1,6 +1,6 @@
 'use strict';
 
-const stringToParts = require('../lib/stringToParts.js');
+const stringToParts = require('../lib/stringToParts.js').stringToParts;
 const Bench = require('benchmark');
 
 new Bench.Suite('stringToParts')

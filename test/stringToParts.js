@@ -1,7 +1,7 @@
 'use strict';
 
 const assert = require('assert');
-const stringToParts = require('../lib/stringToParts');
+const stringToParts = require('../lib/stringToParts').stringToParts;
 
 describe('stringToParts', function() {
   it('handles brackets for numbers', function() {
