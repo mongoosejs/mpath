@@ -5,9 +5,6 @@
   "main": "index.js",
   "scripts": {
     "bench": "node ./benchmarks/bench.js",
-    "bench:map": "node ./benchmarks/bench-map.js",
-    "bench:lru": "node ./benchmarks/bench-lru.js",
-    "bench:fast-lru": "node ./benchmarks/bench-fast-lru.js",
     "coverage": "nyc mocha test/*",
     "lint": "eslint .",
     "test": "mocha test/*"
