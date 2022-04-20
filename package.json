@@ -35,8 +35,10 @@
   "bugs": {
     "url": "https://github.com/aheckman/mpath/issues"
   },
+  "types": "./types/index.d.ts",
   "files": [
     "index.js",
+    "types",
     "lib",
     "*.md"
   ],
