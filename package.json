@@ -45,7 +45,6 @@
     "eslint": "8.7.0",
     "fast-lru-cache": "^1.0.0",
     "lru-cache": "^6.0.0",
-    "mocha": "5.x",
     "nyc": "^15.1.0",
     "mocha": "^9.2.2"
   },

@@ -1,8 +1,5 @@
 'use strict';
 
-const setTokenizeCache = require('../lib/tokenize.js').setTokenizeCache;
-
-setTokenizeCache(undefined);
 require('./tokenize');
 require('./get');
 require('./has');

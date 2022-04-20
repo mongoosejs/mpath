@@ -4,8 +4,6 @@
  * Test dependencies.
  */
 
-const setTokenizeCache = require('../lib/tokenize.js').setTokenizeCache;
-setTokenizeCache(undefined);
 const mpath = require('../');
 const assert = require('assert');
 
