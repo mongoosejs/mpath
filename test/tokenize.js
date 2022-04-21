@@ -1,32 +1,32 @@
 'use strict';
 
 const assert = require('assert');
-const tokenize = require('../lib/tokenize').tokenize;
+const stringToParts = require('../lib/stringToParts').stringToParts;
 
-describe('tokenize', function() {
+describe('stringToParts', function() {
   it('handles brackets for numbers', function() {
-    assert.deepEqual(tokenize('list[0].name'), ['list', '0', 'name']);
-    assert.deepEqual(tokenize('list[0][1].name'), ['list', '0', '1', 'name']);
-    assert.deepEqual(tokenize('arr[11]'), ['arr', '11']);
+    assert.deepEqual(stringToParts('list[0].name'), ['list', '0', 'name']);
+    assert.deepEqual(stringToParts('list[0][1].name'), ['list', '0', '1', 'name']);
+    assert.deepEqual(stringToParts('arr[11]'), ['arr', '11']);
   });
 
   it('handles dot notation', function() {
-    assert.deepEqual(tokenize('a.b.c'), ['a', 'b', 'c']);
-    assert.deepEqual(tokenize('a..b.d'), ['a', '', 'b', 'd']);
-    assert.deepEqual(tokenize('arr.11'), ['arr', '11']);
+    assert.deepEqual(stringToParts('a.b.c'), ['a', 'b', 'c']);
+    assert.deepEqual(stringToParts('a..b.d'), ['a', '', 'b', 'd']);
+    assert.deepEqual(stringToParts('arr.11'), ['arr', '11']);
   });
 
   it('ignores invalid numbers in square brackets', function() {
-    assert.deepEqual(tokenize('foo[1mystring]'), ['foo[1mystring]']);
-    assert.deepEqual(tokenize('foo[1mystring].bar[1]'), ['foo[1mystring]', 'bar', '1']);
-    assert.deepEqual(tokenize('foo[1mystring][2]'), ['foo[1mystring]', '2']);
+    assert.deepEqual(stringToParts('foo[1mystring]'), ['foo[1mystring]']);
+    assert.deepEqual(stringToParts('foo[1mystring].bar[1]'), ['foo[1mystring]', 'bar', '1']);
+    assert.deepEqual(stringToParts('foo[1mystring][2]'), ['foo[1mystring]', '2']);
   });
 
   it('handles empty string', function() {
-    assert.deepEqual(tokenize(''), ['']);
+    assert.deepEqual(stringToParts(''), ['']);
   });
 
   it('handles trailing dot', function() {
-    assert.deepEqual(tokenize('a.b.'), ['a', 'b', '']);
+    assert.deepEqual(stringToParts('a.b.'), ['a', 'b', '']);
   });
 });

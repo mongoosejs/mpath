@@ -1,6 +1,6 @@
 'use strict';
 
-require('./tokenize');
+require('./stringToParts');
 require('./get');
 require('./has');
 require('./set');

@@ -73,7 +73,7 @@ declare namespace mpath {
   function set(path: PathType, val: any, obj: ObjectType, map?: MapFunction): void;
   function set(path: PathType, val: any, obj: ObjectType): void;
 
-  function tokenize(path: string): string[];
+  function stringToParts(path: string): string[];
 }
 
 export = mpath
