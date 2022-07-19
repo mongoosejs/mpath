@@ -76,4 +76,4 @@ declare namespace mpath {
   function stringToParts(path: string): string[];
 }
 
-export = mpath
+export = mpath;
