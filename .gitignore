@@ -2,3 +2,7 @@
 node_modules/
 .nyc_output
 .idea
+coverage/
+
+package-lock.json
+yarn.lock
