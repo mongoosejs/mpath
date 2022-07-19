@@ -41,9 +41,10 @@
     "*.md"
   ],
   "devDependencies": {
-    "benchmark": "2.1.4",
-    "eslint": "8.7.0",
+    "benchmark": "~2.1.4",
+    "eslint": "^7.16.0",
     "nyc": "^15.1.0",
-    "mocha": "5.x"
+    "mocha": "^9.2.2",
+    "eslint-plugin-mocha-no-only": "^1.1.1"
   }
 }

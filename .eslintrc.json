@@ -2,16 +2,26 @@
   "extends": [
     "eslint:recommended"
   ],
+  "ignorePatterns": [
+    "docs",
+    "tools",
+    "dist",
+    "website.js",
+    "test/files/*",
+    "benchmarks"
+  ],
+  "overrides": [],
+  "plugins": [
+    "mocha-no-only"
+  ],
   "parserOptions": {
-    "ecmaVersion": 2015
+    "ecmaVersion": 2020
   },
   "env": {
-    "mocha": true,
     "node": true,
     "es6": true
   },
   "rules": {
-    "no-unused-vars": "off",
     "comma-style": "error",
     "indent": [
       "error",
@@ -25,8 +35,8 @@
     "no-whitespace-before-property": "error",
     "no-buffer-constructor": "warn",
     "no-console": "off",
-    "no-multi-spaces": "error",
     "no-constant-condition": "off",
+    "no-multi-spaces": "error",
     "func-call-spacing": "error",
     "no-trailing-spaces": "error",
     "no-undef": "error",
@@ -114,6 +124,12 @@
         "message": "Don't use Mocha's global context"
       }
     ],
-    "no-prototype-builtins": "off"
+    "no-prototype-builtins": "off",
+    "mocha-no-only/mocha-no-only": [
+      "error"
+    ],
+    "no-empty": "off",
+    "eol-last": "warn",
+    "no-multiple-empty-lines": ["warn", { "max": 2 }]
   }
 }
