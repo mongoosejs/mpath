@@ -7,8 +7,7 @@
     "bench": "node ./benchmarks/bench.js",
     "coverage": "nyc mocha test/*",
     "lint": "eslint .",
-    "test": "mocha test/*",
-    "bench": "node bench.js"
+    "test": "mocha test/*"
   },
   "engines": {
     "node": ">=4.0.0"
