@@ -8,15 +8,6 @@ const mpath = require('../');
 const assert = require('assert');
 
 /**
- * logging helper
- */
-
-function log(o) {
-  console.log();
-  console.log(require('util').inspect(o, false, 1000));
-}
-
-/**
  * special path for override tests
  */
 
@@ -593,6 +584,42 @@ describe('mpath', function() {
   });
 
   describe('set', function() {
+
+    it('set `path` must be a string or array', function(done) {
+      const o = { a: 1 };
+      assert.throws(function() {
+        mpath.set({}, 666, o);
+      }, /Must be either string or array/);
+      assert.throws(function() {
+        mpath.set(4, 666, o);
+      }, /Must be either string or array/);
+      assert.throws(function() {
+        mpath.set(function() {}, 666, o);
+      }, /Must be either string or array/);
+      assert.throws(function() {
+        mpath.set(/asdf/, 666, o);
+      }, /Must be either string or array/);
+      assert.throws(function() {
+        mpath.set(Math, 666, o);
+      }, /Must be either string or array/);
+      assert.throws(function() {
+        mpath.set(Buffer, 666, o);
+      }, /Must be either string or array/);
+      assert.throws(function() {
+        mpath.set([Buffer], 666, o);
+      }, /must be a string or number/);
+      assert.doesNotThrow(function() {
+        mpath.set('string', 666, o);
+      });
+      assert.doesNotThrow(function() {
+        mpath.set([], 666, o);
+      });
+      assert.doesNotThrow(function() {
+        mpath.set([1], 666, o);
+      });
+      done();
+    });
+
     it('prevents writing to __proto__', function() {
       const obj = {};
       mpath.set('__proto__.x', 'foobar', obj);
@@ -777,6 +804,14 @@ describe('mpath', function() {
             { yep: [15], arr: [{ a: { b: 47 } }, { a: { c: 48 } }, { d: 'yep' }] },
             { yep: 0 }
           ], o.arr);
+
+          const testArray = {
+            array: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+          };
+          mpath.set('array.11', 0, testArray);
+          assert.deepEqual({
+            array: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0, 12]
+          }, testArray);
 
           done();
         });
@@ -1804,7 +1839,43 @@ describe('mpath', function() {
       assert.ok(mpath.has('a.b', { a: { b: undefined } }));
       assert.ok(!mpath.has('a.b', { a: 1 }));
       assert.ok(!mpath.has('a.b', { a: null }));
+      assert.ok(mpath.has(['a', 'b'], { a: { b: 1 } }));
 
+      done();
+    });
+
+    it('has `path` must be a string or array', function(done) {
+      const o = { a: 1 };
+      assert.throws(function() {
+        mpath.has({}, o);
+      }, /Must be either string or array/);
+      assert.throws(function() {
+        mpath.has(4, o);
+      }, /Must be either string or array/);
+      assert.throws(function() {
+        mpath.has(function() {}, o);
+      }, /Must be either string or array/);
+      assert.throws(function() {
+        mpath.has(/asdf/, o);
+      }, /Must be either string or array/);
+      assert.throws(function() {
+        mpath.has(Math, o);
+      }, /Must be either string or array/);
+      assert.throws(function() {
+        mpath.has(Buffer, o);
+      }, /Must be either string or array/);
+      assert.throws(function() {
+        mpath.has([Buffer], o);
+      }, /must be a string or number/);
+      assert.doesNotThrow(function() {
+        mpath.has('string', o);
+      });
+      assert.doesNotThrow(function() {
+        mpath.has([], o);
+      });
+      assert.doesNotThrow(function() {
+        mpath.has([1], o);
+      });
       done();
     });
 
@@ -1836,6 +1907,43 @@ describe('mpath', function() {
       mpath.unset('a.b', o);
       assert.deepEqual(o, { a: null });
 
+      assert.ok(!mpath.unset('a.b', null));
+
+      done();
+    });
+
+    it('unset `path` must be a string or array', function(done) {
+      const o = { a: 1 };
+      assert.throws(function() {
+        mpath.unset({}, o);
+      }, /Must be either string or array/);
+      assert.throws(function() {
+        mpath.unset(4, o);
+      }, /Must be either string or array/);
+      assert.throws(function() {
+        mpath.unset(function() {}, o);
+      }, /Must be either string or array/);
+      assert.throws(function() {
+        mpath.unset(/asdf/, o);
+      }, /Must be either string or array/);
+      assert.throws(function() {
+        mpath.unset(Math, o);
+      }, /Must be either string or array/);
+      assert.throws(function() {
+        mpath.unset(Buffer, o);
+      }, /Must be either string or array/);
+      assert.throws(function() {
+        mpath.unset([Buffer], o);
+      }, /must be a string or number/);
+      assert.doesNotThrow(function() {
+        mpath.unset('string', o);
+      });
+      assert.doesNotThrow(function() {
+        mpath.unset([], o);
+      });
+      assert.doesNotThrow(function() {
+        mpath.unset([1], o);
+      });
       done();
     });
 

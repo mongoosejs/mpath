@@ -1,17 +1,19 @@
 'use strict';
 
 const assert = require('assert');
-const stringToParts = require('../lib/stringToParts');
+const stringToParts = require('../lib/stringToParts').stringToParts;
 
 describe('stringToParts', function() {
   it('handles brackets for numbers', function() {
     assert.deepEqual(stringToParts('list[0].name'), ['list', '0', 'name']);
     assert.deepEqual(stringToParts('list[0][1].name'), ['list', '0', '1', 'name']);
+    assert.deepEqual(stringToParts('arr[11]'), ['arr', '11']);
   });
 
   it('handles dot notation', function() {
     assert.deepEqual(stringToParts('a.b.c'), ['a', 'b', 'c']);
     assert.deepEqual(stringToParts('a..b.d'), ['a', '', 'b', 'd']);
+    assert.deepEqual(stringToParts('arr.11'), ['arr', '11']);
   });
 
   it('ignores invalid numbers in square brackets', function() {

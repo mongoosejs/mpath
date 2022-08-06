@@ -1,0 +1,19 @@
+{
+	"all": true,
+	"exclude": [
+		"benchmarks",
+		"coverage",
+		"dist",
+		"test"
+	],
+	"reporter": [
+		"text",
+		"lcov",
+		"text-summary"
+	],
+    "check-coverage": true,
+    "lines": 95,
+    "statements": 95,
+    "functions": 100,
+    "branches": 95
+}
