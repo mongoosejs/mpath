@@ -40,9 +40,13 @@
     "*.md"
   ],
   "devDependencies": {
-    "benchmark": "2.1.4",
-    "eslint": "8.7.0",
+    "@typescript-eslint/eslint-plugin": "^5.30.7",
+    "@typescript-eslint/parser": "^5.30.7",
+    "benchmark": "~2.1.4",
+    "eslint": "^7.16.0",
     "nyc": "^15.1.0",
-    "mocha": "5.x"
+    "mocha": "5.x",
+    "typescript": "^4.7.4",
+    "eslint-plugin-mocha-no-only": "^1.1.1"
   }
 }

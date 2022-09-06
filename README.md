@@ -1,8 +1,7 @@
-#mpath
+# mpath
 
 {G,S}et javascript object values using MongoDB-like path notation.
 
-<div align="center">
 
 [![Known Vulnerabilities](https://snyk.io/test/github/aheckmann/mpath/badge.svg)](https://snyk.io/test/github/aheckmann/mpath)
 [![Security Responsible Disclosure](https://img.shields.io/badge/Security-Responsible%20Disclosure-yellow.svg)](https://github.com/nodejs/security-wg/blob/HEAD/processes/responsible_disclosure_template.md)
@@ -11,10 +10,9 @@
 
 </div>
 
-###Getting
+### Getting
 
 ```js
-var mpath = require('mpath');
 
 var obj = {
     comments: [
@@ -69,7 +67,7 @@ console.log(found); // prints..
 
 ```
 
-#####Field selection rules:
+##### Field selection rules:
 
 The following rules are iteratively applied to each `segment` in the passed `path`. For example:
 
@@ -85,7 +83,7 @@ var path = 'one.two.14'; // path
   - a) if the segment is an integer, replace the parent array with the value at `parent[segment]`
   - b) if not an integer, keep the array but replace each array `item` with the value returned from calling `get(remainingSegments, item)` or undefined if falsy.
 
-#####Maps
+##### Maps
 
 `mpath.get` also accepts an optional `map` argument which receives each individual found value. The value returned from the `map` function will be used in the original found values place.
 
@@ -105,7 +103,7 @@ mpath.get('comments.title', obj, function (val) {
 // ['amusing', 'exciting!']
 ```
 
-###Setting
+### Setting
 
 ```js
 var obj = {
@@ -187,7 +185,7 @@ console.log(require('util').inspect(obj, false, 1000)); // prints..
 }
 ```
 
-####Setting arrays
+#### Setting arrays
 
 By default, setting a property within an array to another array results in each element of the new array being set to the item in the destination array at the matching index. An example is helpful.
 
@@ -229,11 +227,11 @@ console.log(obj); // prints..
   ]}
 ```
 
-####Field assignment rules
+#### Field assignment rules
 
 The rules utilized mirror those used on `mpath.get`, meaning we can take values returned from `mpath.get`, update them, and reassign them using `mpath.set`. Note that setting nested arrays of arrays can get unwieldy quickly. Check out the [tests](https://github.com/aheckmann/mpath/blob/master/test/index.js) for more extreme examples.
 
-#####Maps
+##### Maps
 
 `mpath.set` also accepts an optional `map` argument which receives each individual value being set. The value returned from the `map` function will be used in the original values place.
 
@@ -284,4 +282,3 @@ mpath.set(path, val, obj, '_doc', map);
 ```
 
 [LICENSE](https://github.com/aheckmann/mpath/blob/master/LICENSE)
-
