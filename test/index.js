@@ -1903,6 +1903,10 @@ describe('mpath', function() {
       mpath.unset('a.b', o);
       assert.deepEqual(o, { a: {} });
 
+      o = { a: [{ b: 1 }, { b: 2 }] };
+      mpath.unset('a.b', o);
+      assert.deepEqual(o, { a: [{}, {}] });
+
       o = { a: null };
       mpath.unset('a.b', o);
       assert.deepEqual(o, { a: null });
